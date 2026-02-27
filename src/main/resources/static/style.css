@@ -1,0 +1,58 @@
+/* Genel Ayarlar */
+:root {
+    --primary-green: #16a34a;
+    --hover-green: #15803d;
+    --bg-gray: #f9fafb;
+}
+
+body {
+    font-family: 'Inter', sans-serif; /* Daha modern bir font için */
+    background-color: var(--bg-gray);
+}
+
+/* Navbar Gölgelendirme ve Geçiş */
+nav {
+    backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+/* Tarla Kartları İçin Hover Efekti */
+.field-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.field-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Yapay Zeka Uyarı Kutusu Efekti */
+.ai-alert {
+    position: relative;
+    overflow: hidden;
+}
+
+.ai-alert::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: #fbbf24; /* Sarı uyarı rengi */
+}
+
+/* Sensör Veri Kartları */
+.sensor-badge {
+    background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+    border: 1px solid #e5e7eb;
+}
+
+/* Yeni Tarla Ekle Butonu Animasyonu */
+.btn-add {
+    transition: all 0.3s ease;
+}
+
+.btn-add:active {
+    transform: scale(0.95);
+}
