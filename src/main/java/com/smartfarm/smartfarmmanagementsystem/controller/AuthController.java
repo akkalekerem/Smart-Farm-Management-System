@@ -1,6 +1,5 @@
 package com.smartfarm.smartfarmmanagementsystem.controller;
 
-import com.smartfarm.smartfarmmanagementsystem.entity.User;
 import com.smartfarm.smartfarmmanagementsystem.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -8,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import com.smartfarm.smartfarmmanagementsystem.entity.User;
 
 @Controller
 @RequiredArgsConstructor

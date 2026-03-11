@@ -1,6 +1,6 @@
 package com.smartfarm.smartfarmmanagementsystem.repository;
 
-import com.smartfarm.smartfarmmanagementsystem.entity.User;
+import com.smartfarm.smartfarmmanagementsystem.entity.User; // Paket adınızı kontrol edin
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
