@@ -21,18 +21,25 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Geliştirme aşamasında kolaylık için
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll() // Bu sayfalara herkes girebilir
-                        .anyRequest().authenticated() // Diğer tüm sayfalar (ana panel dahil) giriş gerektirir
+                        .requestMatchers("/register", "/login", "/css/**", "/js/**", "/images/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // Kendi giriş sayfamızı kullanacağımızı belirtiyoruz
-                        .defaultSuccessUrl("/", true) // Giriş başarılıysa ana sayfaya yönlendir
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login") // KRİTİK: Formun POST edildiği URL
+                        .defaultSuccessUrl("/", true) // Girişten sonra index'e atar
+                        .usernameParameter("username") // HTML'deki name="username" ile eşleşir
+                        .passwordParameter("password") // HTML'deki name="password" ile eşleşir
+                        .failureUrl("/login?error=true") // Hata durumunda dönecek URL
                         .permitAll()
                 )
                 .logout(logout -> logout
+                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                         .permitAll()
                 );
 
