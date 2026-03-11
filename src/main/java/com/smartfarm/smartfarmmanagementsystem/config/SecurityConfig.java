@@ -23,16 +23,24 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/login", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // Sadece ADMIN girebilir
+                        .requestMatchers("/user/**").hasRole("USER")   // Sadece USER girebilir
+                        .requestMatchers("/", "/login", "/register", "/css/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .loginProcessingUrl("/login") // KRİTİK: Formun POST edildiği URL
-                        .defaultSuccessUrl("/", true) // Girişten sonra index'e atar
-                        .usernameParameter("username") // HTML'deki name="username" ile eşleşir
-                        .passwordParameter("password") // HTML'deki name="password" ile eşleşir
-                        .failureUrl("/login?error=true") // Hata durumunda dönecek URL
+                        .successHandler((request, response, authentication) -> {
+                            // Role göre farklı sayfaya yönlendirme mantığı
+                            var roles = authentication.getAuthorities();
+                            for (var role : roles) {
+                                if (role.getAuthority().equals("ROLE_ADMIN")) {
+                                    response.sendRedirect("/admin/dashboard");
+                                    return;
+                                }
+                            }
+                            response.sendRedirect("/");
+                        })
                         .permitAll()
                 )
                 .logout(logout -> logout

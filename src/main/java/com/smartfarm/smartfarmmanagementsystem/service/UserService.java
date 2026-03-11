@@ -1,5 +1,6 @@
 package com.smartfarm.smartfarmmanagementsystem.service;
 
+import com.smartfarm.smartfarmmanagementsystem.entity.Role;
 import com.smartfarm.smartfarmmanagementsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +19,9 @@ public class UserService {
     public User registerUser(User user) {
         // Şifreyi BCrypt ile güvenli hale getiriyoruz
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        //Her yeni kayıt olan kullanıcıya varsayılan olarak USER rolü atıyoruz
+        user.setRole(Role.USER);
+
         return userRepository.save(user);
     }
 
