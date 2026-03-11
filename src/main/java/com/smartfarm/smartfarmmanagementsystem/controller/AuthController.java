@@ -14,7 +14,11 @@ import com.smartfarm.smartfarmmanagementsystem.entity.User;
 public class AuthController {
 
     private final UserService userService;
-
+    // loginden index html dosyasına geçişi sağlar.
+    @GetMapping("/")
+    public String index() {
+        return "index"; // templates/index.html dosyasını açar
+    }
     // Login sayfasını gösterir
     @GetMapping("/login")
     public String loginPage() {
@@ -34,4 +38,5 @@ public class AuthController {
         userService.registerUser(user);
         return "redirect:/login?success"; // Kayıt başarılıysa login'e yönlendir
     }
+
 }
