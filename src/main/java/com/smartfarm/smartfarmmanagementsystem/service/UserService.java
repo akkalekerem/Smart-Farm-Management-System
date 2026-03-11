@@ -1,11 +1,10 @@
 package com.smartfarm.smartfarmmanagementsystem.service;
 
-import com.smartfarm.smartfarmmanagementsystem.entity.User;
 import com.smartfarm.smartfarmmanagementsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import com.smartfarm.smartfarmmanagementsystem.entity.User;
 import java.util.Optional;
 
 @Service
