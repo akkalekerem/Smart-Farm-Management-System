@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.smartfarm.smartfarmmanagementsystem.entity.User;
+import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
@@ -16,8 +17,14 @@ public class AuthController {
     private final UserService userService;
     // loginden index html dosyasına geçişi sağlar.
     @GetMapping("/")
-    public String index() {
-        return "index"; // templates/index.html dosyasını açar
+    public String index(Model model, Principal principal) {
+        if (principal != null) {
+            // Giriş yapan kullanıcının e-postasını kullanarak veritabanından bilgilerini getiriyoruz
+            userService.findByEmail(principal.getName()).ifPresent(user -> {
+                model.addAttribute("currentUser", user);
+            });
+        }
+        return "index"; // templates/index.html
     }
     // Login sayfasını gösterir
     @GetMapping("/login")

@@ -35,13 +35,34 @@
         <a href="#" class="hover:text-green-600 transition">Bildirimler</a>
     </div>
 
-    <div class="flex items-center space-x-4 border-l pl-6 border-gray-100">
-        <div class="text-right hidden sm:block">
-            <p class="text-sm font-bold text-gray-900 leading-none">Çiftçi Ahmet</p>
-            <p class="text-[10px] text-green-600 font-bold mt-1 uppercase">Premium Plan</p>
+    <div class="relative inline-block text-left" id="profileDropdown">
+        <div class="flex items-center space-x-4 border-l pl-6 border-gray-100 cursor-pointer group" onclick="toggleDropdown()">
+            <div class="text-right hidden sm:block">
+                <p class="text-sm font-bold text-gray-900 leading-none group-hover:text-green-600 transition"
+                   th:text="${currentUser != null ? currentUser.firstName + ' ' + currentUser.lastName : 'Misafir Kullanıcı'}">
+                    Çiftçi Ahmet
+                </p>
+                <p class="text-[10px] text-green-600 font-bold mt-1 uppercase">Premium Plan</p>
+            </div>
+            <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 shadow-inner group-hover:bg-green-100 transition">
+                <i class="fas fa-user text-lg"></i>
+            </div>
         </div>
-        <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 shadow-inner cursor-pointer hover:bg-green-100 transition">
-            <i class="fas fa-user text-lg"></i>
+
+        <div id="dropdownMenu" class="hidden absolute right-0 mt-3 w-56 origin-top-right bg-white border border-gray-100 rounded-2xl shadow-2xl ring-1 ring-black ring-opacity-5 z-50 overflow-hidden">
+            <div class="py-1" role="none">
+                <a href="/profil" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 transition font-semibold group">
+                    <i class="fas fa-user-cog mr-3 text-gray-400 group-hover:text-green-500"></i> Profil Bilgilerim
+                </a>
+
+                <div class="border-t border-gray-50"></div>
+
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="w-full flex items-center px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition font-bold group text-left">
+                        <i class="fas fa-sign-out-alt mr-3 text-red-400 group-hover:text-red-500"></i> Çıkış Yap
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </nav>
@@ -109,6 +130,22 @@
 <footer class="mt-20 py-8 text-center text-gray-300 text-[10px] font-bold uppercase tracking-[0.2em]">
     &copy; 2026 AgroNexus | AI Smart Farming Simulation
 </footer>
+
+<script>
+    function toggleDropdown() {
+        const menu = document.getElementById('dropdownMenu');
+        menu.classList.toggle('hidden');
+    }
+
+    // Sayfanın herhangi bir yerine tıklandığında menüyü kapat
+    window.addEventListener('click', function(e) {
+        const dropdown = document.getElementById('profileDropdown');
+        const menu = document.getElementById('dropdownMenu');
+        if (dropdown && !dropdown.contains(e.target)) {
+            menu.classList.add('hidden');
+        }
+    });
+</script>
 
 </body>
 </html>
