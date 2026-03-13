@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<nav th:fragment="navbar" class="bg-white/90 backdrop-blur-md shadow-sm px-8 py-4 flex justify-between items-center fixed w-full top-0 z-50 border-b border-gray-100">
+    <div class="flex items-center space-x-3">
+        <div class="bg-green-600 p-2 rounded-lg shadow-lg shadow-green-200">
+            <i class="fas fa-leaf text-white text-xl"></i>
+        </div>
+        <a th:href="@{/}" class="text-2xl font-black tracking-tighter text-gray-900">AgroNexus</a>
+    </div>
+
+    <div class="hidden md:flex space-x-8 font-semibold text-sm uppercase tracking-widest text-gray-500">
+        <a th:href="@{/}"
+           th:classappend="${activePage == 'home' ? 'text-green-600 border-b-2 border-green-600 pb-1' : 'hover:text-green-600 transition'}"
+           class="pb-1">Tarlalarım</a>
+
+        <a th:href="@{/devices}"
+           th:classappend="${activePage == 'devices' ? 'text-green-600 border-b-2 border-green-600 pb-1' : 'hover:text-green-600 transition'}"
+           class="pb-1">Cihaz Yönetimi</a>
+
+        <a th:href="@{/forum}"
+           th:classappend="${activePage == 'forum' ? 'text-green-600 border-b-2 border-green-600 pb-1' : 'hover:text-green-600 transition'}"
+           class="pb-1">Çiftçi Forum</a>
+
+        <a th:href="@{/markets}"
+           th:classappend="${activePage == 'markets' ? 'text-green-600 border-b-2 border-green-600 pb-1' : 'hover:text-green-600 transition'}"
+           class="pb-1">Güncel Piyasalar</a>
+
+        <a th:href="@{/notifications}"
+           th:classappend="${activePage == 'notifications' ? 'text-green-600 border-b-2 border-green-600 pb-1' : 'hover:text-green-600 transition'}"
+           class="pb-1">Bildirimler</a>
+
+        <a th:if="${isAdmin}"
+           th:href="@{/admin/dashboard}"
+           class="text-red-500 hover:text-red-700 transition">Panel</a>
+    </div>
+
+    <div class="flex items-center space-x-4 border-l pl-6 border-gray-100 relative group">
+        <div class="text-right hidden sm:block">
+            <p class="text-sm font-bold text-gray-900 leading-none" th:text="${userName}">Kullanıcı</p>
+        </div>
+
+        <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 shadow-inner cursor-pointer group-hover:bg-green-100 transition relative">
+            <i class="fas fa-user text-lg"></i>
+
+            <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-y-2 group-hover:translate-y-0 z-50">
+
+                <a th:href="@{/profile}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
+                    <i class="fas fa-user-circle mr-3 text-gray-400"></i> Profil Bilgilerim
+                </a>
+
+                <hr class="my-1 border-gray-100">
+
+                <form th:action="@{/logout}" method="post" class="block w-full">
+                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition font-semibold flex items-center">
+                        <i class="fas fa-sign-out-alt mr-3"></i> Çıkış Yap
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+</body>
+</html>

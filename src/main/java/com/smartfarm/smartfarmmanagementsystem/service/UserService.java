@@ -26,7 +26,9 @@ public class UserService {
     }
 
     // E-posta adresine göre kullanıcı bulur
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public User findByEmail(String email) {
+        // userRepository.findByEmail bir Optional döner, .orElse(null) ise:
+        // Eğer kullanıcı varsa onu çıkarır, yoksa null döner.
+        return userRepository.findByEmail(email).orElse(null);
     }
 }

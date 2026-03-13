@@ -14,29 +14,24 @@ import com.smartfarm.smartfarmmanagementsystem.entity.User;
 public class AuthController {
 
     private final UserService userService;
-    // loginden index html dosyasına geçişi sağlar.
-    @GetMapping("/")
-    public String index() {
-        return "index"; // templates/index.html dosyasını açar
-    }
+
     // Login sayfasını gösterir
     @GetMapping("/login")
     public String loginPage() {
-        return "login";
+        return "login"; // templates/login.html
     }
 
     // Register sayfasını gösterir
     @GetMapping("/register")
     public String registerPage(Model model) {
-        model.addAttribute("user", new User());
-        return "register";
+        model.addAttribute("user", new User()); //
+        return "register"; // templates/register.html
     }
 
     // Kayıt formundan gelen veriyi veritabanına kaydeder
     @PostMapping("/register")
     public String registerUser(@ModelAttribute User user) {
-        userService.registerUser(user);
+        userService.registerUser(user); //
         return "redirect:/login?success"; // Kayıt başarılıysa login'e yönlendir
     }
-
 }
