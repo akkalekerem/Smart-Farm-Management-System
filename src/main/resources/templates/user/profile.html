@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hesabım | AgroNexus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#fcfdfd]">
+
+<header class="fixed top-0 w-full bg-white/80 backdrop-blur-lg z-50 border-b border-gray-100">
+    <div class="max-w-5xl mx-auto px-6 h-20 flex justify-between items-center">
+        <div class="flex items-center space-x-8">
+            <a th:href="@{/}" class="flex items-center space-x-2 text-gray-500 hover:text-green-600 transition-all group">
+                <i class="fas fa-arrow-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-bold text-sm tracking-tight">Panel'e Dön</span>
+            </a>
+            <div class="h-6 w-[1px] bg-gray-200"></div>
+            <div class="flex items-center space-x-2">
+                <div class="bg-green-600 p-1.5 rounded-lg shadow-sm">
+                    <i class="fas fa-leaf text-white text-xs"></i>
+                </div>
+                <span class="text-xl font-extrabold tracking-tighter text-gray-900">AgroNexus</span>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-3 text-xs font-bold text-gray-400 uppercase tracking-widest">
+            <i class="fas fa-lock text-green-500"></i>
+            <span>Güvenli Oturum</span>
+        </div>
+    </div>
+</header>
+
+<main class="max-w-5xl mx-auto px-6 pt-32 pb-20">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+
+        <aside class="lg:col-span-4 space-y-6">
+            <div class="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm text-center">
+                <div class="relative inline-block mb-4">
+                    <div class="w-24 h-24 bg-green-50 rounded-3xl flex items-center justify-center text-green-600 border-4 border-white shadow-inner">
+                        <i class="fas fa-user text-4xl"></i>
+                    </div>
+                    <button class="absolute -bottom-1 -right-1 bg-white shadow-md w-8 h-8 rounded-xl border border-gray-50 flex items-center justify-center text-gray-500 hover:text-green-600 transition">
+                        <i class="fas fa-camera text-xs"></i>
+                    </button>
+                </div>
+                <h2 class="text-xl font-bold text-gray-900" th:text="${user.firstName + ' ' + user.lastName}">Kerem Yılmaz</h2>
+                <p class="text-sm text-gray-400 font-medium" th:text="${user.email}">kerem@mail.com</p>
+            </div>
+
+            <nav class="bg-white p-4 rounded-[2rem] border border-gray-100 shadow-sm space-y-1">
+                <a href="#" class="flex items-center space-x-3 p-4 bg-green-50 text-green-700 rounded-2xl font-bold transition">
+                    <i class="fas fa-id-card"></i>
+                    <span class="text-sm">Kişisel Bilgiler</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 p-4 text-gray-500 hover:bg-gray-50 rounded-2xl font-bold transition">
+                    <i class="fas fa-shield-halved"></i>
+                    <span class="text-sm">Güvenlik ve Şifre</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 p-4 text-gray-500 hover:bg-gray-50 rounded-2xl font-bold transition">
+                    <i class="fas fa-bell"></i>
+                    <span class="text-sm">Bildirim Ayarları</span>
+                </a>
+            </nav>
+        </aside>
+
+        <section class="lg:col-span-8">
+            <div class="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-sm">
+                <div class="flex justify-between items-start mb-10">
+                    <div>
+                        <h3 class="text-2xl font-extrabold text-gray-900">Kişisel Bilgiler</h3>
+                        <p class="text-sm text-gray-400 font-medium mt-1">Platform genelindeki kimlik bilgilerini yönet.</p>
+                    </div>
+                    <button class="bg-gray-900 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-green-600 transition shadow-lg shadow-gray-200">
+                        Düzenle
+                    </button>
+                </div>
+
+                <div class="space-y-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-gray-400">Adınız</label>
+                            <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100 font-bold text-gray-700" th:text="${user.firstName}">Kerem</div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-gray-400">Soyadınız</label>
+                            <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100 font-bold text-gray-700" th:text="${user.lastName}">Yılmaz</div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-gray-400">E-Posta Adresi</label>
+                        <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100 font-bold text-gray-700 flex justify-between items-center">
+                            <span th:text="${user.email}">kerem@mail.com</span>
+                            <i class="fas fa-check-circle text-green-500"></i>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 border-t border-gray-100 grid grid-cols-2 gap-4">
+                        <div class="bg-orange-50 p-4 rounded-2xl">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-orange-400 mb-1">Hesap Türü</p>
+                            <p class="text-sm font-bold text-orange-700" th:text="${user.role}">USER</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-2xl">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-1">Durum</p>
+                            <p class="text-sm font-bold text-blue-700">Doğrulanmış Hesap</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 p-6 bg-red-50 rounded-[2rem] border border-red-100 flex justify-between items-center">
+                <div>
+                    <h4 class="text-sm font-bold text-red-900">Hesabı Dondur</h4>
+                    <p class="text-xs text-red-600 font-medium">Verilerin silinmeden hesabını geçici olarak kapat.</p>
+                </div>
+                <button class="text-red-600 hover:text-red-700 font-black text-xs uppercase tracking-widest">Şimdi Yap</button>
+            </div>
+        </section>
+    </div>
+</main>
+
+</body>
+</html>
