@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content, title)">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${title} + ' | AgroNexus'">AgroNexus</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="mt-28 max-w-7xl mx-auto p-6">
+  <div th:replace="${content}"></div>
+</main>
+
+<footer class="mt-20 py-8 text-center text-gray-300 text-[10px] font-bold uppercase tracking-[0.2em]">
+  &copy; 2026 AgroNexus | AI Smart Farming Simulation
+</footer>
+
+</body>
+</html>

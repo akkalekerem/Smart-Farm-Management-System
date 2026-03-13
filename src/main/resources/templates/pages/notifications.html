@@ -1,0 +1,21 @@
+<div th:replace="~{layout :: layout(~{::section}, 'Bildirimler')}">
+  <section>
+    <div class="flex justify-between items-center mb-10">
+      <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Bildirimler</h1>
+      <button class="text-xs font-bold text-gray-400 hover:text-green-600 uppercase tracking-widest">Tümünü Okundu İşaretle</button>
+    </div>
+
+    <div class="space-y-4">
+      <div class="bg-amber-50 p-6 rounded-2xl border border-amber-100 flex items-start space-x-4">
+        <div class="bg-amber-100 p-3 rounded-xl text-amber-600">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div>
+          <p class="text-sm font-black text-amber-900 uppercase">Don Uyarısı!</p>
+          <p class="text-amber-800 text-sm mt-1">Güney Domates Serası'nda sıcaklık 4°C altına düştü. Isıtma sistemini kontrol edin.</p>
+          <p class="text-[10px] text-amber-600 font-bold mt-2">15 DAKİKA ÖNCE</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
