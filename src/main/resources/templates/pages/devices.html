@@ -1,11 +1,201 @@
 <div th:replace="~{layout :: layout(~{::section}, 'Cihaz Yönetimi')}">
   <section>
-    <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Cihaz Yönetimi</h1>
-    <p class="text-gray-500 mt-1">Sistemine bağlı olan sensör ve sulama cihazlarını buradan yönetebilirsin.</p>
-
-    <div class="mt-10 bg-white p-8 rounded-2xl border border-dashed border-gray-300 text-center">
-      <i class="fas fa-microchip text-4xl text-gray-300 mb-4"></i>
-      <p class="text-gray-400">Henüz bağlı bir cihaz bulunamadı. Cihaz eklemek için "Cihaz Tara" butonuna bas.</p>
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <div>
+        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Cihaz Yönetimi</h1>
+        <p class="text-gray-500 mt-1">Sahadaki aktif tarım kitlerinin anlık donanım ve bağlantı durumları.</p>
+      </div>
+      <button onclick="document.getElementById('addDeviceModal').classList.remove('hidden')" class="bg-gray-900 hover:bg-black text-white px-5 py-2.5 rounded-xl font-bold flex items-center shadow-lg shadow-gray-200 transition-all active:scale-95 text-sm">
+        <i class="fas fa-microchip mr-2"></i> Yeni Kit Ekle
+      </button>
     </div>
+
+    <div th:if="${devices == null or devices.isEmpty()}" class="bg-white p-10 rounded-3xl border border-dashed border-gray-300 text-center">
+      <div class="w-16 h-16 bg-gray-50 text-gray-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <i class="fas fa-box-open text-2xl"></i>
+      </div>
+      <h3 class="text-lg font-bold text-gray-900">Henüz Cihaz Eklenmemiş</h3>
+      <p class="text-gray-500 text-sm mt-1">Tarlanıza ait bir ESP32-S3 kiti bulunamadı.</p>
+    </div>
+
+    <div th:each="device : ${devices}" class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 md:p-10 mb-8 relative">
+
+      <div class="flex justify-between items-start border-b border-gray-100 pb-6 mb-8">
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner"
+               th:classappend="${device.isOnline ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}">
+            <i class="fas fa-server text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-black text-gray-900" th:text="${device.deviceName}">Cihaz Adı</h2>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1" th:text="'MAC: ' + ${device.macAddress}">MAC ADRESİ</p>
+          </div>
+        </div>
+        <span th:if="${device.isOnline}" class="bg-green-50 text-green-600 px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wide flex items-center border border-green-100">
+          <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></span> Çevrimiçi
+        </span>
+        <span th:unless="${device.isOnline}" class="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wide flex items-center border border-red-100">
+          <i class="fas fa-power-off mr-2"></i> Çevrimdışı
+        </span>
+      </div>
+
+      <div class="relative w-full h-[42rem] md:h-[40rem] bg-slate-50 rounded-[2rem] border border-slate-100 overflow-hidden mb-6 flex items-center justify-center">
+        <svg class="absolute inset-0 w-full h-full pointer-events-none z-0">
+          <line x1="50%" y1="50%" x2="50%" y2="15%" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6,6" />
+          <line x1="50%" y1="50%" x2="50%" y2="85%" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6,6" />
+          <line x1="50%" y1="50%" x2="20%" y2="25%" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6,6" />
+          <line x1="50%" y1="50%" x2="20%" y2="75%" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6,6" />
+          <line x1="50%" y1="50%" x2="80%" y2="25%" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6,6" />
+          <line x1="50%" y1="50%" x2="80%" y2="75%" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6,6" />
+        </svg>
+
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 w-36 h-36 md:w-40 md:h-40 bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col items-center justify-center group transition-transform hover:scale-105">
+          <div class="absolute top-4 right-4 w-3 h-3 rounded-full" th:classappend="${device.isOnline ? 'bg-green-400 animate-pulse' : 'bg-red-500'}"></div>
+          <i class="fas fa-microchip text-5xl md:text-6xl text-gray-700 mb-2 group-hover:text-green-600 transition-colors"></i>
+          <span class="text-[10px] font-black tracking-widest text-gray-500 uppercase">ESP32-S3</span>
+        </div>
+
+        <div class="absolute top-6 md:top-8 left-1/2 transform -translate-x-1/2 z-10 bg-white p-3 md:p-4 rounded-2xl border shadow-sm flex flex-col items-center w-28 md:w-36 transition-colors" th:classappend="${device.lightModuleActive ? 'border-gray-100 hover:border-yellow-300' : 'border-red-200'}">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center mb-2" th:classappend="${device.lightModuleActive ? 'bg-yellow-50 text-yellow-500' : 'bg-red-50 text-red-500'}"><i class="fas fa-sun text-lg"></i></div>
+          <p class="text-[9px] md:text-[10px] font-black text-gray-800 uppercase tracking-wide">Işık</p>
+          <p class="text-[9px] font-bold mt-1" th:classappend="${device.lightModuleActive ? 'text-green-500' : 'text-red-500'}">
+            <i class="fas" th:classappend="${device.lightModuleActive ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+            <span th:text="${device.lightModuleActive ? ' Aktif' : ' Koptu'}"></span>
+          </p>
+        </div>
+
+        <div class="absolute bottom-6 md:bottom-8 left-1/2 transform -translate-x-1/2 z-10 bg-white p-3 md:p-4 rounded-2xl border shadow-sm flex flex-col items-center w-28 md:w-36 transition-colors" th:classappend="${device.rainModuleActive ? 'border-gray-100 hover:border-cyan-300' : 'border-red-200'}">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center mb-2" th:classappend="${device.rainModuleActive ? 'bg-cyan-50 text-cyan-500' : 'bg-red-50 text-red-500'}"><i class="fas fa-cloud-rain text-lg"></i></div>
+          <p class="text-[9px] md:text-[10px] font-black text-gray-800 uppercase tracking-wide">Yağmur</p>
+          <p class="text-[9px] font-bold mt-1" th:classappend="${device.rainModuleActive ? 'text-green-500' : 'text-red-500'}">
+            <i class="fas" th:classappend="${device.rainModuleActive ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+            <span th:text="${device.rainModuleActive ? ' Aktif' : ' Koptu'}"></span>
+          </p>
+        </div>
+
+        <div class="absolute top-16 md:top-24 left-4 md:left-12 z-10 bg-white p-3 md:p-4 rounded-2xl border shadow-sm flex flex-col items-center w-28 md:w-36 transition-colors" th:classappend="${device.tempModuleActive ? 'border-gray-100 hover:border-orange-300' : 'border-red-200'}">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center mb-2" th:classappend="${device.tempModuleActive ? 'bg-orange-50 text-orange-500' : 'bg-red-50 text-red-500'}"><i class="fas fa-temperature-half text-lg"></i></div>
+          <p class="text-[9px] md:text-[10px] font-black text-gray-800 uppercase tracking-wide">Sıcaklık</p>
+          <p class="text-[9px] font-bold mt-1" th:classappend="${device.tempModuleActive ? 'text-green-500' : 'text-red-500'}">
+            <i class="fas" th:classappend="${device.tempModuleActive ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+            <span th:text="${device.tempModuleActive ? ' Aktif' : ' Koptu'}"></span>
+          </p>
+        </div>
+
+        <div class="absolute bottom-16 md:bottom-24 left-4 md:left-12 z-10 bg-white p-3 md:p-4 rounded-2xl border shadow-sm flex flex-col items-center w-28 md:w-36 transition-colors" th:classappend="${device.soilMoistureActive ? 'border-gray-100 hover:border-blue-300' : 'border-red-200'}">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center mb-2" th:classappend="${device.soilMoistureActive ? 'bg-blue-50 text-blue-500' : 'bg-red-50 text-red-500'}"><i class="fas fa-droplet text-lg"></i></div>
+          <p class="text-[9px] md:text-[10px] font-black text-gray-800 uppercase tracking-wide">Nem</p>
+          <p class="text-[9px] font-bold mt-1" th:classappend="${device.soilMoistureActive ? 'text-green-500' : 'text-red-500'}">
+            <i class="fas" th:classappend="${device.soilMoistureActive ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+            <span th:text="${device.soilMoistureActive ? ' Aktif' : ' Koptu'}"></span>
+          </p>
+        </div>
+
+        <div class="absolute top-16 md:top-24 right-4 md:right-12 z-10 bg-white p-3 md:p-4 rounded-2xl border shadow-sm flex flex-col items-center w-28 md:w-36 transition-colors" th:classappend="${device.windModuleActive ? 'border-gray-100 hover:border-indigo-300' : 'border-red-200'}">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center mb-2" th:classappend="${device.windModuleActive ? 'bg-indigo-50 text-indigo-500' : 'bg-red-50 text-red-500'}"><i class="fas fa-wind text-lg"></i></div>
+          <p class="text-[9px] md:text-[10px] font-black text-gray-800 uppercase tracking-wide">Rüzgar</p>
+          <p class="text-[9px] font-bold mt-1" th:classappend="${device.windModuleActive ? 'text-green-500' : 'text-red-500'}">
+            <i class="fas" th:classappend="${device.windModuleActive ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+            <span th:text="${device.windModuleActive ? ' Aktif' : ' Koptu'}"></span>
+          </p>
+        </div>
+
+        <div class="absolute bottom-16 md:bottom-24 right-4 md:right-12 z-10 bg-white p-3 md:p-4 rounded-2xl border shadow-sm flex flex-col items-center w-28 md:w-36 transition-colors" th:classappend="${device.ecModuleActive ? 'border-gray-100 hover:border-emerald-300' : 'border-red-200'}">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center mb-2" th:classappend="${device.ecModuleActive ? 'bg-emerald-50 text-emerald-500' : 'bg-red-50 text-red-500'}"><i class="fas fa-flask text-lg"></i></div>
+          <p class="text-[9px] md:text-[10px] font-black text-gray-800 uppercase tracking-wide">Besin</p>
+          <p class="text-[9px] font-bold mt-1" th:classappend="${device.ecModuleActive ? 'text-green-500' : 'text-red-500'}">
+            <i class="fas" th:classappend="${device.ecModuleActive ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+            <span th:text="${device.ecModuleActive ? ' Aktif' : ' Koptu'}"></span>
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 flex flex-col md:flex-row justify-between items-center divide-y md:divide-y-0 md:divide-x divide-gray-100">
+        <div class="flex items-center space-x-4 w-full md:w-1/3 justify-center py-3 md:py-0">
+          <div th:classappend="${device.wifiSignal > -60 ? 'text-green-500' : 'text-red-500'}"><i class="fas fa-wifi text-2xl"></i></div>
+          <div class="text-left">
+            <p class="text-[10px] font-black uppercase tracking-widest text-gray-400">Wi-Fi</p>
+            <p class="text-sm font-bold text-gray-800" th:text="${device.wifiSignal} + ' dBm'"></p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4 w-full md:w-1/3 justify-center py-3 md:py-0">
+          <div th:classappend="${device.batteryLevel > 20 ? 'text-green-500' : 'text-red-500'}"><i class="fas fa-bolt text-2xl"></i></div>
+          <div class="text-left">
+            <p class="text-[10px] font-black uppercase tracking-widest text-gray-400">Batarya</p>
+            <p class="text-sm font-bold text-gray-800" th:text="'%' + ${device.batteryLevel}"></p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4 w-full md:w-1/3 justify-center py-3 md:py-0">
+          <div class="text-blue-500"><i class="fas fa-clock text-2xl"></i></div>
+          <div class="text-left">
+            <p class="text-[10px] font-black uppercase tracking-widest text-gray-400">Son Veri</p>
+            <p class="text-sm font-bold text-gray-800" th:text="${#temporals.format(device.lastUpdate, 'HH:mm')}"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-gray-100 flex justify-end space-x-4">
+        <button th:onclick="'document.getElementById(\'editModal' + ${device.id} + '\').classList.remove(\'hidden\')'"
+                class="w-32 h-11 bg-blue-500 hover:bg-blue-600 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-blue-100 active:scale-95 flex items-center justify-center">
+          <i class="fas fa-edit mr-2"></i> Düzenle
+        </button>
+        <form th:action="@{'/devices/delete/' + ${device.id}}" method="post" onsubmit="return confirm('Bu cihazı silmek istediğinize emin misiniz?')">
+          <button type="submit" class="w-32 h-11 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-red-100 active:scale-95 flex items-center justify-center">
+            <i class="fas fa-trash-alt mr-2"></i> Sil
+          </button>
+        </form>
+      </div>
+
+      <div th:id="'editModal' + ${device.id}" class="hidden fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[150] flex items-center justify-center">
+        <div class="bg-white p-8 rounded-[2rem] w-full max-w-md shadow-2xl border border-gray-100 transform transition-all">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-black text-gray-900">Cihazı Düzenle</h3>
+            <button th:onclick="'document.getElementById(\'editModal' + ${device.id} + '\').classList.add(\'hidden\')'" class="text-gray-400 hover:text-red-500">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+          <form th:action="@{'/devices/update/' + ${device.id}}" method="post" class="space-y-5">
+            <div>
+              <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 text-left">Cihaz İsmi</label>
+              <input type="text" name="deviceName" th:value="${device.deviceName}" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-blue-500" required>
+            </div>
+            <div>
+              <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 text-left">MAC Adresi</label>
+              <input type="text" name="macAddress" th:value="${device.macAddress}" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-blue-500 uppercase" required>
+            </div>
+            <div class="pt-4 flex space-x-3">
+              <button type="button" th:onclick="'document.getElementById(\'editModal' + ${device.id} + '\').classList.add(\'hidden\')'" class="w-1/3 bg-gray-100 font-bold py-3 rounded-xl">İptal</button>
+              <button type="submit" class="w-2/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-100 active:scale-95">Güncelle</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="addDeviceModal" class="hidden fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[150] flex items-center justify-center">
+      <div class="bg-white p-8 rounded-[2rem] w-full max-w-md shadow-2xl border border-gray-100 transform transition-all">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-black text-gray-900">Yeni Kit Tanımla</h3>
+          <button onclick="document.getElementById('addDeviceModal').classList.add('hidden')" class="text-gray-400 hover:text-red-500">
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+        <form th:action="@{/devices/add}" method="post" class="space-y-5 text-left">
+          <div>
+            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Cihaz İsmi</label>
+            <input type="text" name="deviceName" placeholder="Örn: Kuzey Serası" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-green-500 transition" required>
+          </div>
+          <div>
+            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">MAC Adresi</label>
+            <input type="text" name="macAddress" placeholder="00:1B:44:..." class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-green-500 transition uppercase" required>
+          </div>
+          <div class="pt-4 flex space-x-3">
+            <button type="button" onclick="document.getElementById('addDeviceModal').classList.add('hidden')" class="w-1/3 bg-gray-100 font-bold py-3 rounded-xl">İptal</button>
+            <button type="submit" class="w-2/3 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-green-100 active:scale-95">Eşleştir</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
   </section>
 </div>

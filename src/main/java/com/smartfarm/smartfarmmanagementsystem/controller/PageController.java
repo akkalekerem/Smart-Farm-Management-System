@@ -15,12 +15,6 @@ public class PageController {
         return "pages/index";
     }
 
-    @GetMapping("/devices")
-    public String devices(Model model) {
-        model.addAttribute("activePage", "devices");
-        return "pages/devices";
-    }
-
     @GetMapping("/forum")
     public String forum(Model model) {
         model.addAttribute("activePage", "forum");
