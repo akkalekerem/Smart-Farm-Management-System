@@ -3,6 +3,8 @@ package com.smartfarm.smartfarmmanagementsystem.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -26,4 +28,8 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    // Bir kullanıcının birden fazla cihazı olabilir (One-To-Many)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private List<Device> devices;
 }
