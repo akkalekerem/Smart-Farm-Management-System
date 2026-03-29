@@ -1,0 +1,195 @@
+<div th:replace="~{layout :: layout(~{::section}, ${field.fieldName} + ' Detayları')}">
+    <section>
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <a th:href="@{/}" class="text-gray-400 hover:text-green-600 font-bold text-sm mb-2 inline-block transition-colors"><i class="fas fa-arrow-left mr-1"></i> Tarlalara Dön</a>
+                <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight" th:text="${field.fieldName}">Tarla Adı</h1>
+                <p class="text-gray-500 mt-1">Anlık Sensör Verileri</p>
+            </div>
+            <div class="bg-green-50 text-green-600 px-4 py-2 rounded-xl border border-green-100 font-bold flex items-center shadow-sm">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></span> Canlı Veri Akışı
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center">
+                <i class="fas fa-temperature-half text-orange-500 text-xl mb-2"></i>
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Sıcaklık</p>
+                <p class="text-lg font-bold text-gray-800 mt-1" id="valTemp">-- °C</p>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center">
+                <i class="fas fa-droplet text-blue-500 text-xl mb-2"></i>
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Toprak Nemi</p>
+                <p class="text-lg font-bold text-gray-800 mt-1" id="valMoisture">-- %</p>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center">
+                <i class="fas fa-sun text-yellow-500 text-xl mb-2"></i>
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Işık</p>
+                <p class="text-lg font-bold text-gray-800 mt-1" id="valLight">-- lx</p>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center">
+                <i class="fas fa-flask text-emerald-500 text-xl mb-2"></i>
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">EC (Besin)</p>
+                <p class="text-lg font-bold text-gray-800 mt-1" id="valEc">-- mS/cm</p>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center">
+                <i class="fas fa-wind text-indigo-500 text-xl mb-2"></i>
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Rüzgar</p>
+                <p class="text-lg font-bold text-gray-800 mt-1" id="valWind">-- km/h</p>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center transition-colors duration-300" id="rainCard">
+                <i class="fas fa-cloud-rain text-xl mb-2" id="rainIcon"></i>
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Yağmur Durumu</p>
+                <p class="text-lg font-bold mt-1" id="valRain">--</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
+                <h3 class="text-sm font-bold text-gray-900 mb-4">Sıcaklık ve Nem Eğilimi</h3>
+                <canvas id="tempMoistureChart" height="200"></canvas>
+            </div>
+            <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
+                <h3 class="text-sm font-bold text-gray-900 mb-4">Işık Şiddeti (Lüx)</h3>
+                <canvas id="lightChart" height="200"></canvas>
+            </div>
+            <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
+                <h3 class="text-sm font-bold text-gray-900 mb-4">Toprak EC (Besin) Seviyesi</h3>
+                <canvas id="ecChart" height="200"></canvas>
+            </div>
+            <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
+                <h3 class="text-sm font-bold text-gray-900 mb-4">Rüzgar Hızı (km/h)</h3>
+                <canvas id="windChart" height="200"></canvas>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            const fieldId = /*[[${field.id}]]*/ '1';
+            /*]]>*/
+
+            // Grafik 1: Sıcaklık ve Nem
+            const ctx1 = document.getElementById('tempMoistureChart').getContext('2d');
+            const tempMoistureChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'Sıcaklık (°C)', borderColor: '#f97316', backgroundColor: 'rgba(249, 115, 22, 0.2)', data: [], tension: 0.4, fill: true },
+                        { label: 'Nem (%)', borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.2)', data: [], tension: 0.4, fill: true }
+                    ]
+                },
+                options: { responsive: true, scales: { y: { beginAtZero: true } }, animation: { duration: 0 } }
+            });
+
+            // Grafik 2: Işık
+            const ctx2 = document.getElementById('lightChart').getContext('2d');
+            const lightChart = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{ label: 'Işık Şiddeti (lx)', borderColor: '#eab308', backgroundColor: 'rgba(234, 179, 8, 0.2)', data: [], tension: 0.4, fill: true }]
+                },
+                options: { responsive: true, scales: { y: { beginAtZero: true } }, animation: { duration: 0 } }
+            });
+
+            // Grafik 3: EC (Besin)
+            const ctx3 = document.getElementById('ecChart').getContext('2d');
+            const ecChart = new Chart(ctx3, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{ label: 'EC Seviyesi (mS/cm)', borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.2)', data: [], tension: 0.4, fill: true }]
+                },
+                options: { responsive: true, scales: { y: { beginAtZero: true } }, animation: { duration: 0 } }
+            });
+
+            // Grafik 4: Rüzgar
+            const ctx4 = document.getElementById('windChart').getContext('2d');
+            const windChart = new Chart(ctx4, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{ label: 'Rüzgar Hızı (km/h)', backgroundColor: '#6366f1', borderRadius: 6, data: [] }]
+                },
+                options: { responsive: true, scales: { y: { beginAtZero: true } }, animation: { duration: 0 } }
+            });
+
+            // Veri Çekme Fonksiyonu
+            function fetchTelemetryData() {
+                fetch(`/api/fields/${fieldId}/telemetry`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const now = new Date().toLocaleTimeString('tr-TR', { hour12: false, hour: "numeric", minute: "numeric", second: "numeric" });
+
+                        // Üstteki kartları güncelle
+                        document.getElementById('valTemp').innerText = data.temperature + " °C";
+                        document.getElementById('valMoisture').innerText = data.soilMoisture + " %";
+                        document.getElementById('valLight').innerText = data.lightLevel + " lx";
+                        document.getElementById('valEc').innerText = data.ecLevel + " mS/cm";
+                        document.getElementById('valWind').innerText = data.windSpeed + " km/h";
+
+                        // Yağmur Durumunu Güncelle (Kart rengi ve ikonu değişir)
+                        const rainCard = document.getElementById('rainCard');
+                        const rainIcon = document.getElementById('rainIcon');
+                        const valRain = document.getElementById('valRain');
+
+                        if(data.isRaining) {
+                            rainCard.className = "bg-cyan-50 p-4 rounded-2xl border border-cyan-200 shadow-sm text-center transition-colors duration-300";
+                            rainIcon.className = "fas fa-cloud-showers-heavy text-cyan-600 text-xl mb-2 animate-bounce";
+                            valRain.innerText = "Yağış Var";
+                            valRain.className = "text-lg font-bold mt-1 text-cyan-700";
+                        } else {
+                            rainCard.className = "bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center transition-colors duration-300";
+                            rainIcon.className = "fas fa-cloud text-gray-300 text-xl mb-2";
+                            valRain.innerText = "Kuru";
+                            valRain.className = "text-lg font-bold mt-1 text-gray-800";
+                        }
+
+                        // Grafiklere yeni veriyi ekle
+                        tempMoistureChart.data.labels.push(now);
+                        tempMoistureChart.data.datasets[0].data.push(data.temperature);
+                        tempMoistureChart.data.datasets[1].data.push(data.soilMoisture);
+
+                        lightChart.data.labels.push(now);
+                        lightChart.data.datasets[0].data.push(data.lightLevel);
+
+                        ecChart.data.labels.push(now);
+                        ecChart.data.datasets[0].data.push(data.ecLevel);
+
+                        windChart.data.labels.push(now);
+                        windChart.data.datasets[0].data.push(data.windSpeed);
+
+                        // Grafikte maksimum 10 veri noktası görünsün, eskileri sil
+                        if (tempMoistureChart.data.labels.length > 10) {
+                            tempMoistureChart.data.labels.shift();
+                            tempMoistureChart.data.datasets[0].data.shift();
+                            tempMoistureChart.data.datasets[1].data.shift();
+
+                            lightChart.data.labels.shift();
+                            lightChart.data.datasets[0].data.shift();
+
+                            ecChart.data.labels.shift();
+                            ecChart.data.datasets[0].data.shift();
+
+                            windChart.data.labels.shift();
+                            windChart.data.datasets[0].data.shift();
+                        }
+
+                        // Grafikleri çiz
+                        tempMoistureChart.update();
+                        lightChart.update();
+                        ecChart.update();
+                        windChart.update();
+                    })
+                    .catch(error => console.error("Veri çekme hatası:", error));
+            }
+
+            // İlk veriyi hemen çek, sonra her 2 saniyede bir tekrarla
+            fetchTelemetryData();
+            setInterval(fetchTelemetryData, 2000);
+        </script>
+    </section>
+</div>
