@@ -3,14 +3,134 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
             <div>
                 <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Tarlalarım</h1>
-                <p class="text-gray-500 mt-1">Simüle sensör verileri ve yapay zeka analizleri burada listelenir.</p>
+                <p class="text-gray-500 mt-1">Sisteminizde kayıtlı olan üretim alanları ve atanmış donanımlar.</p>
             </div>
-            <button class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold flex items-center shadow-lg shadow-green-100 transition-all active:scale-95">
+            <button onclick="document.getElementById('addFieldModal').classList.remove('hidden')" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold flex items-center shadow-lg shadow-green-100 transition-all active:scale-95">
                 <i class="fas fa-plus-circle mr-2 text-lg"></i> Yeni Tarla Ekle
             </button>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div th:if="${fields == null or fields.isEmpty()}" class="bg-white p-12 rounded-[2.5rem] border border-dashed border-gray-300 text-center shadow-sm">
+            <div class="w-20 h-20 bg-green-50 text-green-500 rounded-3xl flex items-center justify-center mx-auto mb-5">
+                <i class="fas fa-tractor text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-black text-gray-900">Henüz Tarla Eklenmemiş</h3>
+            <p class="text-gray-500 text-sm mt-2 max-w-md mx-auto">Sistemde takip edilen bir tarla bulunmuyor. Sağ üstteki butonu kullanarak ilk üretim alanınızı ve sensör kitinizi eşleştirebilirsiniz.</p>
         </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div th:each="field : ${fields}" class="bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-lg transition-all p-6 relative group overflow-hidden">
+
+                <div class="absolute top-4 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button th:onclick="'document.getElementById(\'editFieldModal' + ${field.id} + '\').classList.remove(\'hidden\')'" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-100 transition">
+                        <i class="fas fa-pen text-xs"></i>
+                    </button>
+                    <form th:action="@{'/fields/delete/' + ${field.id}}" method="post" onsubmit="return confirm('Bu tarlayı silmek istediğinize emin misiniz? (Bağlı cihaz silinmez, sadece boşa çıkar)')">
+                        <button type="submit" class="w-8 h-8 bg-red-50 text-red-600 rounded-lg flex items-center justify-center hover:bg-red-100 transition">
+                            <i class="fas fa-trash text-xs"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="flex items-center space-x-4 mb-6">
+                    <div class="w-14 h-14 bg-green-50 rounded-2xl flex items-center justify-center text-green-600 shadow-inner">
+                        <i class="fas fa-seedling text-2xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-black text-gray-900" th:text="${field.fieldName}">Tarla Adı</h2>
+                        <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest mt-1 inline-block" th:text="${field.cropType}">Ürün</span>
+                    </div>
+                </div>
+
+                <div class="space-y-3 mb-6">
+                    <div class="flex justify-between items-center text-sm border-b border-gray-50 pb-2">
+                        <span class="text-gray-400 font-bold uppercase text-[10px] tracking-widest">Alan Büyüklüğü</span>
+                        <span class="font-black text-gray-800" th:text="${field.areaSize} + ' Dönüm'"></span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm border-b border-gray-50 pb-2">
+                        <span class="text-gray-400 font-bold uppercase text-[10px] tracking-widest">Atanan Cihaz</span>
+                        <span class="font-black text-blue-600" th:text="${field.device != null ? field.device.deviceName : 'Cihaz Yok'}"></span>
+                    </div>
+                </div>
+
+                <a th:href="@{'/fields/' + ${field.id}}" class="w-full bg-gray-900 hover:bg-black text-white py-3 rounded-xl text-sm font-bold flex items-center justify-center transition-colors">
+                    <i class="fas fa-chart-line mr-2"></i> Sensör Verilerini Gör
+                </a>
+
+                <div th:id="'editFieldModal' + ${field.id}" class="hidden fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[150] flex items-center justify-center">
+                    <div class="bg-white p-8 rounded-[2rem] w-full max-w-md shadow-2xl border border-gray-100 transform transition-all">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-black text-gray-900">Tarlayı Düzenle</h3>
+                            <button type="button" th:onclick="'document.getElementById(\'editFieldModal' + ${field.id} + '\').classList.add(\'hidden\')'" class="text-gray-400 hover:text-red-500">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        <form th:action="@{'/fields/update/' + ${field.id}}" method="post" class="space-y-5 text-left">
+                            <div>
+                                <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Tarla Adı</label>
+                                <input type="text" name="fieldName" th:value="${field.fieldName}" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-blue-500" required>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Ekilen Ürün</label>
+                                    <input type="text" name="cropType" th:value="${field.cropType}" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-blue-500" required>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Boyut (Dönüm)</label>
+                                    <input type="number" step="0.1" name="areaSize" th:value="${field.areaSize}" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-blue-500" required>
+                                </div>
+                            </div>
+                            <div class="pt-4 flex space-x-3">
+                                <button type="button" th:onclick="'document.getElementById(\'editFieldModal' + ${field.id} + '\').classList.add(\'hidden\')'" class="w-1/3 bg-gray-100 font-bold py-3 rounded-xl">İptal</button>
+                                <button type="submit" class="w-2/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-100 active:scale-95">Güncelle</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="addFieldModal" class="hidden fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[150] flex items-center justify-center">
+            <div class="bg-white p-8 rounded-[2rem] w-full max-w-md shadow-2xl border border-gray-100 transform transition-all">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-black text-gray-900">Yeni Tarla Ekle</h3>
+                    <button type="button" onclick="document.getElementById('addFieldModal').classList.add('hidden')" class="text-gray-400 hover:text-red-500">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form th:action="@{/fields/add}" method="post" class="space-y-5 text-left">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Tarla Adı</label>
+                        <input type="text" name="fieldName" placeholder="Örn: Güney Domates Serası" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-green-500" required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Ekilen Ürün</label>
+                            <input type="text" name="cropType" placeholder="Örn: Domates" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-green-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Boyut (Dönüm)</label>
+                            <input type="number" step="0.1" name="areaSize" placeholder="Örn: 15.5" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-green-500" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Bağlanacak Sensör Kiti</label>
+                        <div th:if="${devices == null or devices.isEmpty()}" class="p-3 bg-orange-50 text-orange-600 rounded-xl text-xs font-bold border border-orange-100">
+                            <i class="fas fa-exclamation-triangle mr-1"></i> Önce "Cihaz Yönetimi" sekmesinden bir kit eklemelisiniz.
+                        </div>
+                        <select th:if="${devices != null and !devices.isEmpty()}" name="deviceId" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-green-500 cursor-pointer" required>
+                            <option value="" disabled selected>Cihaz Seçiniz...</option>
+                            <option th:each="device : ${devices}" th:value="${device.id}" th:text="${device.deviceName} + ' (' + ${device.macAddress} + ')'"></option>
+                        </select>
+                    </div>
+                    <div class="pt-4 flex space-x-3">
+                        <button type="button" onclick="document.getElementById('addFieldModal').classList.add('hidden')" class="w-1/3 bg-gray-100 font-bold py-3 rounded-xl">İptal</button>
+                        <button type="submit" class="w-2/3 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-green-100 active:scale-95" th:disabled="${devices == null or devices.isEmpty()}">Tarlayı Oluştur</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </section>
 </div>
