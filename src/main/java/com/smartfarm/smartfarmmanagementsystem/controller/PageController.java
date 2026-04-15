@@ -15,11 +15,13 @@ public class PageController {
         return "pages/index";
     }
 
-    @GetMapping("/forum")
-    public String forum(Model model) {
-        model.addAttribute("activePage", "forum");
-        return "pages/forum";
-    }
+//    @GetMapping("/forum")
+//    public String forum(Model model) {
+//        model.addAttribute("activePage", "forum");
+//        return "pages/forum";
+//    }
+
+
 
     @GetMapping("/markets")
     public String markets(Model model) {
