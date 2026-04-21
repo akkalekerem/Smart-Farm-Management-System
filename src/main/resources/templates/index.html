@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroNexus | Akıllı Tarım Paneli</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<nav class="bg-white/90 backdrop-blur-md shadow-sm px-8 py-4 flex justify-between items-center fixed w-full top-0 z-50 border-b border-gray-100">
+    <div class="flex items-center space-x-3">
+        <div class="bg-green-600 p-2 rounded-lg shadow-lg shadow-green-200">
+            <i class="fas fa-leaf text-white text-xl"></i>
+        </div>
+        <span class="text-2xl font-black tracking-tighter text-gray-900">AgroNexus</span>
+    </div>
+
+    <div class="hidden md:flex space-x-8 font-semibold text-sm uppercase tracking-widest text-gray-500">
+        <a href="#" class="text-green-600 border-b-2 border-green-600 pb-1">Tarlalarım</a>
+        <a href="#" class="hover:text-green-600 transition">Çiftçi Forum</a>
+        <a href="#" class="hover:text-green-600 transition">Cihaz Yönetimi</a>
+        <a href="#" class="hover:text-green-600 transition">Güncel Piyasalar</a>
+        <a href="#" class="hover:text-green-600 transition">Bildirimler</a>
+    </div>
+
+    <div class="flex items-center space-x-4 border-l pl-6 border-gray-100">
+        <div class="text-right hidden sm:block">
+            <p class="text-sm font-bold text-gray-900 leading-none">Çiftçi Ahmet</p>
+            <p class="text-[10px] text-green-600 font-bold mt-1 uppercase">Premium Plan</p>
+        </div>
+        <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 shadow-inner cursor-pointer hover:bg-green-100 transition">
+            <i class="fas fa-user text-lg"></i>
+        </div>
+    </div>
+</nav>
+
+<main class="mt-28 max-w-7xl mx-auto p-6">
+
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+        <div>
+            <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Tarlalarım</h1>
+            <p class="text-gray-500 mt-1">Simüle sensör verileri ve yapay zeka analizleri burada listelenir.</p>
+        </div>
+        <button class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold flex items-center shadow-lg shadow-green-100 transition-all active:scale-95">
+            <i class="fas fa-plus-circle mr-2 text-lg"></i> Yeni Tarla Ekle
+        </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <div class="field-card bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h3 class="font-bold text-xl text-gray-900 leading-tight">Güney Domates Serası</h3>
+                        <p class="text-xs text-gray-400 mt-1 uppercase font-bold tracking-widest">Bölge: Akdeniz / A-1</p>
+                    </div>
+                    <span class="bg-green-50 text-green-600 text-[10px] font-black px-3 py-1 rounded-full border border-green-100">ONLINE</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="sensor-badge p-4 rounded-2xl text-center border border-gray-50">
+                        <i class="fas fa-temperature-high text-orange-400 mb-2"></i>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase">Sıcaklık</p>
+                        <p class="text-2xl font-black text-gray-900">28°C</p>
+                    </div>
+                    <div class="sensor-badge p-4 rounded-2xl text-center border border-gray-50">
+                        <i class="fas fa-droplet text-blue-400 mb-2"></i>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase">Toprak Nemi</p>
+                        <p class="text-2xl font-black text-gray-900">%42</p>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 rounded-xl p-4 mb-6 flex items-start space-x-3 border border-amber-100/50">
+                    <div class="bg-amber-100 p-2 rounded-lg text-amber-600">
+                        <i class="fas fa-robot text-sm"></i>
+                    </div>
+                    <div>
+                        <p class="text-amber-900 text-xs font-black uppercase mb-1">Yapay Zeka Bildirimi</p>
+                        <p class="text-amber-800 text-xs leading-relaxed font-medium">Sıcaklık artış eğiliminde! Akşam sulama planını onaylıyor musun?</p>
+                    </div>
+                </div>
+
+                <div class="flex space-x-3">
+                    <button class="flex-1 bg-gray-900 text-white py-3 rounded-xl text-xs font-bold hover:bg-black transition shadow-md shadow-gray-200">
+                        Raporları Gör
+                    </button>
+                    <button class="bg-red-50 text-red-500 px-4 py-3 rounded-xl hover:bg-red-100 transition active:scale-90">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="mt-20 py-8 text-center text-gray-300 text-[10px] font-bold uppercase tracking-[0.2em]">
+    &copy; 2026 AgroNexus | AI Smart Farming Simulation
+</footer>
+
+</body>
+</html>
