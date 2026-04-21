@@ -2,34 +2,29 @@ package com.smartfarm.smartfarmmanagementsystem.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "fields")
+@Table(name = "notifications")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Field {
+public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String fieldName;
+    @Column(nullable = false, length = 500)
+    private String message;
 
-    private Double areaSize;
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
+
+    private boolean isRead = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User owner;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "device_id")
-    private Device device;
-
-    // Ürün Kütüphanesi ile bağlantı
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "crop_id")
-    private Crop crop;
+    private User user;
 }

@@ -38,7 +38,8 @@
                     </div>
                     <div>
                         <h2 class="text-xl font-black text-gray-900" th:text="${field.fieldName}">Tarla Adı</h2>
-                        <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest mt-1 inline-block" th:text="${field.cropType}">Ürün</span>
+                        <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest mt-1 inline-block"
+                              th:text="${field.crop != null ? field.crop.name : 'Ürün Seçilmemiş'}">Ürün</span>
                     </div>
                 </div>
 
@@ -72,8 +73,10 @@
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Ekilen Ürün</label>
-                                    <input type="text" name="cropType" th:value="${field.cropType}" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-blue-500" required>
+                                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Ekeceğiniz Ürün</label>
+                                    <select name="cropId" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-blue-500 cursor-pointer" required>
+                                        <option th:each="c : ${allCrops}" th:value="${c.id}" th:text="${c.name}" th:selected="${field.crop != null and c.id == field.crop.id}"></option>
+                                    </select>
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Boyut (Dönüm)</label>
@@ -106,8 +109,11 @@
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Ekilen Ürün</label>
-                            <input type="text" name="cropType" placeholder="Örn: Domates" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-green-500" required>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Ekeceğiniz Ürün</label>
+                            <select name="cropId" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-green-500 cursor-pointer" required>
+                                <option value="" disabled selected>Ürün Seçin...</option>
+                                <option th:each="c : ${allCrops}" th:value="${c.id}" th:text="${c.name}"></option>
+                            </select>
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Boyut (Dönüm)</label>
