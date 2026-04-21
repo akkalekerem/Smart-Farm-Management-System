@@ -9,17 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class PageController {
 
-    @GetMapping("/")
-    public String index(Model model) {
-        model.addAttribute("activePage", "home");
-        return "pages/index";
-    }
 
-    @GetMapping("/forum")
-    public String forum(Model model) {
-        model.addAttribute("activePage", "forum");
-        return "pages/forum";
-    }
+//    @GetMapping("/forum")
+//    public String forum(Model model) {
+//        model.addAttribute("activePage", "forum");
+//        return "pages/forum";
+//    }
 
     @GetMapping("/markets")
     public String markets(Model model) {
