@@ -36,12 +36,6 @@ public class PageController {
         return "pages/notifications";
     }
 
-//    @GetMapping("/forum")
-//    public String forum(Model model) {
-//        model.addAttribute("activePage", "forum");
-//        return "pages/forum";
-//    }
-
     @GetMapping("/markets")
     public String markets(Model model) {
         model.addAttribute("activePage", "markets");
