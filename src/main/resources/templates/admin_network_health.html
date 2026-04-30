@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Paneli - Sistem Sağlığı</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex h-screen overflow-hidden">
+
+<div th:replace="~{fragments/admin_sidebar :: adminSidebar('network')}"></div>
+
+<main class="flex-1 overflow-y-auto p-8">
+  <div class="max-w-4xl mx-auto bg-gray-900 text-white p-8 rounded-lg shadow-2xl border-t-4 border-green-500">
+    <div class="flex justify-between items-center mb-8 border-b border-gray-700 pb-4">
+      <h1 class="text-3xl font-mono font-bold text-green-400">⚡ Sistem Monitörü</h1>
+      <span class="text-xs bg-gray-800 text-green-400 px-3 py-1 rounded-full border border-gray-600 animate-pulse">● Canlı Bağlantı Aktif</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- CPU KART -->
+      <div class="bg-gray-800 p-6 rounded-md shadow-inner border border-gray-700">
+        <div class="flex justify-between mb-2">
+          <span class="text-gray-400 font-mono text-sm">CPU Kullanımı</span>
+          <span id="cpu-text" class="text-green-400 font-mono font-bold" th:text="${cpuUsage != null ? cpuUsage + ' %' : 'Yükleniyor...'}">0.0 %</span>
+        </div>
+        <div class="w-full bg-gray-900 rounded-full h-4 border border-gray-600 overflow-hidden">
+          <div id="cpu-bar" class="bg-green-500 h-4 transition-all duration-1000 ease-out"
+               th:style="'width: ' + (${cpuUsage != null ? cpuUsage : 0}) + '%'"></div>
+        </div>
+      </div>
+
+      <!-- RAM KART -->
+      <div class="bg-gray-800 p-6 rounded-md shadow-inner border border-gray-700">
+        <div class="flex justify-between mb-2">
+          <span class="text-gray-400 font-mono text-sm">RAM Tüketimi</span>
+          <span id="ram-text" class="text-blue-400 font-mono font-bold"
+                th:text="${usedRam != null ? usedRam + ' MB / ' + totalRam + ' MB' : 'Yükleniyor...'}">0 MB / 0 MB</span>
+        </div>
+        <div class="w-full bg-gray-900 rounded-full h-4 border border-gray-600 overflow-hidden">
+          <!-- HATA BURADAYDI: Matematik işlemine null kontrolü ekledik -->
+          <div id="ram-bar" class="bg-blue-500 h-4 transition-all duration-1000 ease-out"
+               th:style="'width: ' + (${usedRam != null && totalRam != null ? (usedRam * 100 / totalRam) : 0}) + '%'"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  function updateMetrics() {
+    fetch('/admin/api/network-data')
+            .then(response => response.json())
+            .then(data => {
+              document.getElementById('cpu-text').innerText = data.cpuUsage + ' %';
+              document.getElementById('ram-text').innerText = data.usedRam + ' MB / ' + data.totalRam + ' MB';
+              document.getElementById('cpu-bar').style.width = data.cpuUsage + '%';
+              let ramPercent = (data.usedRam * 100 / data.totalRam);
+              document.getElementById('ram-bar').style.width = ramPercent + '%';
+            })
+            .catch(error => console.error("Veri çekilemedi:", error));
+  }
+
+  // Sayfa açılır açılmaz bir kere çalıştır
+  updateMetrics();
+  // Sonra her 3 saniyede bir tekrarla
+  setInterval(updateMetrics, 3000);
+</script>
+
+</body>
+</html>

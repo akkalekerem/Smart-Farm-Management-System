@@ -35,7 +35,7 @@ public class SecurityConfig {
                             var roles = authentication.getAuthorities();
                             for (var role : roles) {
                                 if (role.getAuthority().equals("ROLE_ADMIN")) {
-                                    response.sendRedirect("/admin/dashboard");
+                                    response.sendRedirect("/admin");
                                     return;
                                 }
                             }
