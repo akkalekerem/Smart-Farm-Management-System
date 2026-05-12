@@ -36,6 +36,7 @@ public class MarketService {
      */
     @Cacheable(value = "marketPrices")
     public List<MarketPriceDTO> getMarketPrices() {
+        System.out.println("Gidilen URL: " + apiUrl);
         // 1. Veritabanından limit kaydını kontrol et
         ApiUsage usage = apiUsageRepository.findById("MARKET_API")
                 .orElse(new ApiUsage());
