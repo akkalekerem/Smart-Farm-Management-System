@@ -36,11 +36,7 @@ public class PageController {
         return "pages/notifications";
     }
 
-    @GetMapping("/markets")
-    public String markets(Model model) {
-        model.addAttribute("activePage", "markets");
-        return "pages/markets";
-    }
+
 
 
 }
