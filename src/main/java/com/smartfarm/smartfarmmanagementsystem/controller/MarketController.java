@@ -1,6 +1,6 @@
 package com.smartfarm.smartfarmmanagementsystem.controller;
 
-import com.smartfarm.smartfarmmanagementsystem.service.MarketService;
+import com.smartfarm.smartfarmmanagementsystem.repository.CropRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class MarketController {
 
-    private final MarketService marketService;
+    private final CropRepository cropRepository;
 
     @GetMapping("/markets")
-    public String markets(Model model) {
-        model.addAttribute("prices", marketService.getMarketPrices());
+    public String showCropsMarketPage(Model model) {
+        // Veritabanındaki tüm ürünleri çekip sayfaya gönderiyoruz
+        model.addAttribute("crops", cropRepository.findAll());
         model.addAttribute("activePage", "markets");
         return "pages/markets";
     }
