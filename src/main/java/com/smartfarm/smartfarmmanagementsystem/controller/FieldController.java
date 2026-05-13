@@ -131,6 +131,7 @@ public class FieldController {
             state.lastAiCheckTime = currentTime;
         }
 
+
         Map<String, Object> data = new HashMap<>();
         data.put("temperature", String.format(Locale.US, "%.1f", state.temp));
         data.put("soilMoisture", String.format(Locale.US, "%.1f", state.moisture));
