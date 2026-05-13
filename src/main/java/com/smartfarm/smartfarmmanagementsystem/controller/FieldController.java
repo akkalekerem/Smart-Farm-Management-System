@@ -124,7 +124,7 @@ public class FieldController {
 
         long currentTime = System.currentTimeMillis();
         if (currentTime - state.lastAiCheckTime > 15000) {
-            String aiComment = aiService.getFarmInsight(field.getFieldName(), field.getCropType(), state.temp, state.moisture, state.wind);
+            String aiComment = aiService.getFarmInsight(field.getFieldName(), field.getCropType(), state.temp, state.moisture, state.wind, state.light, state.ec);
             if (aiComment != null && !aiComment.isEmpty()) {
                 createNotification(currentUser, "🤖 AI Danışman: " + aiComment);
             }
