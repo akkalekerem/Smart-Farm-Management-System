@@ -12,4 +12,8 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     // Kullanıcıya göre bildirimleri tarihe göre tersten (en yeni en üstte) listelemek için
     List<Notification> findByUserOrderByTimestampDesc(User user);
+
+    // OKUNMAMIŞ BİLDİRİMLERİ BULMAK İÇİN (Hata veren eksik metot buydu)
+    // Eğer Entity içinde değişken adın "isRead" ise bu isim tam uyar.
+    List<Notification> findByUserAndIsReadFalse(User user);
 }
