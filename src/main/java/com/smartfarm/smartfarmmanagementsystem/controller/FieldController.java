@@ -3,18 +3,20 @@ package com.smartfarm.smartfarmmanagementsystem.controller;
 import com.smartfarm.smartfarmmanagementsystem.entity.*;
 import com.smartfarm.smartfarmmanagementsystem.repository.*;
 import com.smartfarm.smartfarmmanagementsystem.service.UserService;
+import com.smartfarm.smartfarmmanagementsystem.service.AiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-import com.smartfarm.smartfarmmanagementsystem.repository.NotificationRepository;
+
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,78 +24,78 @@ public class FieldController {
 
     private final FieldRepository fieldRepository;
     private final DeviceRepository deviceRepository;
-    private final CropRepository cropRepository;
-    private final NotificationRepository notificationRepository; // Bildirimleri kaydetmek için eklendi
+    private final NotificationRepository notificationRepository;
     private final UserService userService;
+    private final AiService aiService;
 
-    // TARLALARIM SEKMESİ
+    private final Map<Long, TelemetryState> telemetryStates = new ConcurrentHashMap<>();
+
+    private static class TelemetryState {
+        double temp = 23.5;
+        double moisture = 52.0;
+        double light = 820.0;
+        double ec = 1.35;
+        double wind = 10.5;
+        long lastAiCheckTime = 0;
+    }
+
     @GetMapping("/")
     public String index(Model model, Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {
             User currentUser = userService.findByEmail(authentication.getName());
-
-            List<Field> myFields = fieldRepository.findByOwner(currentUser);
-            List<Device> myDevices = deviceRepository.findByOwner(currentUser);
-            List<Crop> allCrops = cropRepository.findAll();
-
-            model.addAttribute("fields", myFields);
-            model.addAttribute("devices", myDevices);
-            model.addAttribute("allCrops", allCrops);
+            model.addAttribute("fields", fieldRepository.findByOwner(currentUser));
+            model.addAttribute("devices", deviceRepository.findByOwner(currentUser));
         }
-
         model.addAttribute("activePage", "home");
         return "pages/index";
     }
 
-    // YENİ TARLA EKLEME
+    // --- YENİ TARLA EKLEME ---
     @PostMapping("/fields/add")
     public String addField(@RequestParam String fieldName,
-                           @RequestParam Long cropId,
+                           @RequestParam String cropType,
                            @RequestParam Double areaSize,
                            @RequestParam Long deviceId,
                            Authentication authentication) {
 
         User currentUser = userService.findByEmail(authentication.getName());
-        Device selectedDevice = deviceRepository.findById(deviceId).orElse(null);
-        Crop selectedCrop = cropRepository.findById(cropId).orElse(null);
+        Device device = deviceRepository.findById(deviceId).orElse(null);
 
         Field newField = new Field();
         newField.setFieldName(fieldName);
-        newField.setCrop(selectedCrop);
+        newField.setCropType(cropType);
         newField.setAreaSize(areaSize);
         newField.setOwner(currentUser);
-        newField.setDevice(selectedDevice);
+        newField.setDevice(device);
 
         fieldRepository.save(newField);
         return "redirect:/";
     }
 
-    // TARLA SİLME
+    // --- TARLA SİLME (404 HATASINI ÇÖZEN KISIM) ---
     @PostMapping("/fields/delete/{id}")
     public String deleteField(@PathVariable("id") Long id) {
         fieldRepository.deleteById(id);
+        telemetryStates.remove(id); // Hafızayı temizle
         return "redirect:/";
     }
 
-    // TARLA GÜNCELLEME
+    // --- TARLA GÜNCELLEME (HATA ALMAMAK İÇİN EKLENDİ) ---
     @PostMapping("/fields/update/{id}")
     public String updateField(@PathVariable("id") Long id,
                               @RequestParam String fieldName,
-                              @RequestParam Long cropId,
+                              @RequestParam String cropType,
                               @RequestParam Double areaSize) {
 
         Field field = fieldRepository.findById(id).orElseThrow();
-        Crop selectedCrop = cropRepository.findById(cropId).orElseThrow();
-
         field.setFieldName(fieldName);
-        field.setCrop(selectedCrop);
+        field.setCropType(cropType);
         field.setAreaSize(areaSize);
-        fieldRepository.save(field);
 
+        fieldRepository.save(field);
         return "redirect:/";
     }
 
-    // DETAY KISMI
     @GetMapping("/fields/{id}")
     public String fieldDetails(@PathVariable("id") Long id, Model model) {
         Field field = fieldRepository.findById(id).orElseThrow();
@@ -102,72 +104,48 @@ public class FieldController {
         return "pages/field_detail";
     }
 
-    // BİLDİRİM DESTEKLİ TELEMETRİ API
+    // --- TELEMETRİ VE AI API ---
     @GetMapping("/api/fields/{id}/telemetry")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getSimulatedTelemetry(@PathVariable("id") Long id, Authentication authentication) {
         Field field = fieldRepository.findById(id).orElseThrow();
-        Crop crop = field.getCrop();
         User currentUser = userService.findByEmail(authentication.getName());
 
-        // Sensör verisi simülasyonu
-        double temp = 10.0 + (Math.random() * 30.0);
-        double moisture = 20.0 + (Math.random() * 70.0);
-        double light = 100.0 + (Math.random() * 1200.0);
-        double ec = 0.5 + (Math.random() * 4.0);
-        double wind = Math.random() * 60.0;
-        boolean isRaining = Math.random() > 0.8;
+        TelemetryState state = telemetryStates.computeIfAbsent(id, k -> new TelemetryState());
 
-        // BİLDİRİM MANTIĞI (Veritabanına Kayıt)
-        if (crop != null) {
-            checkAndNotify(field, currentUser, temp, moisture, wind, ec);
+        state.temp += (Math.random() - 0.5) * 0.6;
+        state.moisture += (Math.random() - 0.5) * 1.0;
+        state.light += (Math.random() - 0.5) * 30.0;
+        state.ec += (Math.random() - 0.5) * 0.02;
+        state.wind += (Math.random() - 0.5) * 2.0;
+
+        state.temp = Math.max(10.0, Math.min(42.0, state.temp));
+        state.moisture = Math.max(20.0, Math.min(95.0, state.moisture));
+
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - state.lastAiCheckTime > 15000) {
+            String aiComment = aiService.getFarmInsight(field.getFieldName(), field.getCropType(), state.temp, state.moisture, state.wind);
+            if (aiComment != null && !aiComment.isEmpty()) {
+                createNotification(currentUser, "🤖 AI Danışman: " + aiComment);
+            }
+            state.lastAiCheckTime = currentTime;
         }
 
-        Map<String, Object> telemetryData = new HashMap<>();
-        telemetryData.put("temperature", String.format(Locale.US, "%.1f", temp));
-        telemetryData.put("soilMoisture", String.format(Locale.US, "%.1f", moisture));
-        telemetryData.put("lightLevel", String.format(Locale.US, "%.0f", light));
-        telemetryData.put("ecLevel", String.format(Locale.US, "%.2f", ec));
-        telemetryData.put("windSpeed", String.format(Locale.US, "%.1f", wind));
-        telemetryData.put("isRaining", isRaining);
-        // aiInsight alanı silindi çünkü artık bildirim olarak kaydediliyor.
-
-        return ResponseEntity.ok(telemetryData);
-    }
-
-    // Bildirimleri Kontrol Eden ve Kaydeden Yardımcı Metot
-    private void checkAndNotify(Field field, User user, double temp, double moisture, double wind, double ec) {
-        Crop crop = field.getCrop();
-
-        // Sıcaklık Bildirimi
-        if (temp > crop.getMaxTemp()) {
-            createNotification(user, "🔥 " + field.getFieldName() + " tarlanızda yüksek sıcaklık: " + String.format("%.1f", temp) + "°C");
-        } else if (temp < crop.getMinTemp()) {
-            createNotification(user, "❄️ " + field.getFieldName() + " tarlanızda don riski: " + String.format("%.1f", temp) + "°C");
-        }
-
-        // Rüzgar Bildirimi
-        if (wind > crop.getMaxWindSpeed()) {
-            createNotification(user, "🌪️ Şiddetli Rüzgar! " + field.getFieldName() + " bölgesinde rüzgar hızı: " + String.format("%.1f", wind) + " km/h");
-        }
-
-        // Nem Bildirimi
-        if (moisture < crop.getMinMoisture()) {
-            createNotification(user, "💧 " + field.getFieldName() + " için acil sulama gerekli! Toprak nemi: %" + String.format("%.0f", moisture));
-        }
-
-        // EC (Besin) Bildirimi
-        if (ec > crop.getMaxEc()) {
-            createNotification(user, "⚠️ " + field.getFieldName() + " toprağında yüksek tuzluluk/besin birikimi tespit edildi.");
-        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("temperature", String.format(Locale.US, "%.1f", state.temp));
+        data.put("soilMoisture", String.format(Locale.US, "%.1f", state.moisture));
+        data.put("lightLevel", String.format(Locale.US, "%.0f", state.light));
+        data.put("ecLevel", String.format(Locale.US, "%.2f", state.ec));
+        data.put("windSpeed", String.format(Locale.US, "%.1f", state.wind));
+        return ResponseEntity.ok(data);
     }
 
     private void createNotification(User user, String message) {
-        Notification notification = new Notification();
-        notification.setMessage(message);
-        notification.setTimestamp(LocalDateTime.now());
-        notification.setUser(user);
-        notification.setRead(false);
-        notificationRepository.save(notification);
+        Notification n = new Notification();
+        n.setMessage(message);
+        n.setTimestamp(LocalDateTime.now());
+        n.setUser(user);
+        n.setRead(false);
+        notificationRepository.save(n);
     }
 }

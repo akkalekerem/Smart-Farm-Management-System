@@ -1,39 +1,120 @@
-<div th:replace="~{layout :: layout(~{::section}, 'Güncel Piyasalar')}">
-  <section>
-    <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Güncel Piyasalar</h1>
-    <p class="text-gray-500 mt-1">Borsa İstanbul ve yerel hallerden alınan anlık fiyat verileri.</p>
+<div th:replace="~{layout :: layout(~{::section}, 'Ürün Rehberi')}">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-10 text-center lg:text-left">
+            <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">Ürün Yetiştirme Rehberi</h1>
+            <p class="text-gray-500 mt-2">Bitkilerinizin sağlıklı gelişimi için gereken ideal sınırlar.</p>
+        </div>
 
-    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="bg-white p-6 rounded-2xl border border-gray-100 flex justify-between items-center">
-        <div class="flex items-center space-x-4">
-          <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-orange-600">
-            <i class="fas fa-wheat-awn text-xl"></i>
-          </div>
-          <div>
-            <p class="font-bold text-gray-900">Ekmeklik Buğday</p>
-            <p class="text-xs text-gray-400 uppercase font-bold">Ton / TMO</p>
-          </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div th:each="crop : ${crops}">
+
+                <div th:onclick="|openModal(${crop.id})|"
+                     class="group relative h-64 rounded-3xl overflow-hidden cursor-pointer shadow-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+
+                    <img th:src="${crop.imageUrl}"
+                         onerror="this.src='https://images.unsplash.com/photo-1592424001801-098e983411b2?w=600&q=80'"
+                         alt="Ürün Fotoğrafı"
+                         class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity"></div>
+
+                    <div class="absolute bottom-0 left-0 p-6 w-full">
+                        <h3 class="text-2xl font-bold text-white mb-1" th:text="${crop.name}">Ürün Adı</h3>
+                        <div class="flex items-center text-green-400 text-sm font-medium">
+                            <span>Parametreleri Gör</span>
+                            <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:id="'modal-' + ${crop.id}" class="fixed inset-0 z-50 hidden flex items-center justify-center">
+                    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" th:onclick="|closeModal(${crop.id})|"></div>
+
+                    <div class="relative bg-white rounded-[2rem] w-full max-w-2xl mx-4 shadow-2xl z-10 animate-fade-in-up overflow-hidden">
+
+                        <div class="bg-gradient-to-r from-green-600 to-green-500 p-6 flex justify-between items-center text-white">
+                            <div>
+                                <h3 class="text-2xl font-bold" th:text="${crop.name}">Ürün Adı</h3>
+                                <span class="text-xs opacity-80 font-medium tracking-widest uppercase">Biyolojik Parametreler</span>
+                            </div>
+                            <button th:onclick="|closeModal(${crop.id})|" class="w-10 h-10 bg-white/20 hover:bg-red-500 hover:text-white rounded-xl flex items-center justify-center backdrop-blur-sm transition-colors text-white">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+
+                        <div class="p-8 space-y-6">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-orange-50 p-4 rounded-2xl border border-orange-100/50">
+                                    <p class="text-[10px] text-orange-600 font-bold uppercase tracking-widest mb-1">Sıcaklık</p>
+                                    <p class="text-gray-900 font-black text-lg" th:text="${crop.minTemp} + '° - ' + ${crop.maxTemp} + '°'"></p>
+                                </div>
+                                <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100/50">
+                                    <p class="text-[10px] text-blue-600 font-bold uppercase tracking-widest mb-1">Nem</p>
+                                    <p class="text-gray-900 font-black text-lg" th:text="'%' + ${crop.minMoisture} + ' - %' + ${crop.maxMoisture}"></p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-yellow-50 p-4 rounded-2xl border border-yellow-100/50">
+                                    <p class="text-[10px] text-yellow-600 font-bold uppercase tracking-widest mb-1">Işık (Lux)</p>
+                                    <p class="text-gray-900 font-black text-base" th:text="${crop.minLight} + ' - ' + ${crop.maxLight}"></p>
+                                </div>
+                                <div class="bg-purple-50 p-4 rounded-2xl border border-purple-100/50">
+                                    <p class="text-[10px] text-purple-600 font-bold uppercase tracking-widest mb-1">Besin (EC)</p>
+                                    <p class="text-gray-900 font-black text-lg" th:text="${crop.minEc} + ' - ' + ${crop.maxEc}"></p>
+                                </div>
+                            </div>
+
+                            <div class="pt-6 border-t border-gray-50">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Teknik Tavsiye</p>
+                                </div>
+                                <p class="text-sm text-gray-600 leading-relaxed italic" th:text="${crop.aiSpecialNote}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
-        <div class="text-right">
-          <p class="text-xl font-black text-gray-900">9.250 ₺</p>
-          <p class="text-xs text-green-500 font-bold"><i class="fas fa-arrow-up"></i> %1.2</p>
-        </div>
-      </div>
-      <div class="bg-white p-6 rounded-2xl border border-gray-100 flex justify-between items-center">
-        <div class="flex items-center space-x-4">
-          <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center text-red-600">
-            <i class="fas fa-apple-whole text-xl"></i>
-          </div>
-          <div>
-            <p class="font-bold text-gray-900">Sanayi Tipi Domates</p>
-            <p class="text-xs text-gray-400 uppercase font-bold">Kg / Antalya Hal</p>
-          </div>
-        </div>
-        <div class="text-right">
-          <p class="text-xl font-black text-gray-900">14.80 ₺</p>
-          <p class="text-xs text-red-500 font-bold"><i class="fas fa-arrow-down"></i> %0.4</p>
-        </div>
-      </div>
-    </div>
-  </section>
+
+        <script>
+            function openModal(cropId) {
+                const modal = document.getElementById('modal-' + cropId);
+                modal.classList.remove('hidden');
+                // Sayfanın arkada kaymasını engelle
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal(cropId) {
+                const modal = document.getElementById('modal-' + cropId);
+                modal.classList.add('hidden');
+                // Sayfa kaydırmasını geri aç
+                document.body.style.overflow = 'auto';
+            }
+
+            // ESC tuşuna basılınca açık modalları kapatma
+            document.addEventListener('keydown', function(event) {
+                if (event.key === "Escape") {
+                    const modals = document.querySelectorAll('[id^="modal-"]:not(.hidden)');
+                    modals.forEach(modal => {
+                        modal.classList.add('hidden');
+                    });
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        </script>
+
+        <style>
+            @keyframes fadeInUp {
+                from { opacity: 0; transform: translateY(20px) scale(0.95); }
+                to { opacity: 1; transform: translateY(0) scale(1); }
+            }
+            .animate-fade-in-up {
+                animation: fadeInUp 0.3s ease-out forwards;
+            }
+        </style>
+
+    </section>
 </div>

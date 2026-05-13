@@ -16,27 +16,21 @@ public class Crop {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String name;           // Örn: Patates, Çilek, Domates
+    private String name;
 
-    // --- SICAKLIK PARAMETRELERİ (°C) ---
-    private Double minTemp;        // Minimum büyüme sınırı
-    private Double maxTemp;        // Maksimum dayanma sınırı (Isı stresi)
+    private Double minTemp;
+    private Double maxTemp;
+    private Double minMoisture;
+    private Double maxMoisture;
+    private Double minLight;
+    private Double maxLight;
+    private Double minEc;
+    private Double maxEc;
+    private Double maxWindSpeed;
 
-    // --- NEM PARAMETRELERİ (%) ---
-    private Double minMoisture;    // Kritik sulama sınırı
-    private Double maxMoisture;    // Mantar hastalığı riski sınırı
-
-    // --- IŞIK PARAMETRELERİ (Lux) ---
-    private Double minLight;       // Minimum fotosentez ışığı
-    private Double maxLight;       // Yaprak yanması riski sınırı
-
-    // --- BESİN / GÜBRELEME PARAMETRELERİ (EC - mS/cm) ---
-    private Double minEc;          // Minimum besin ihtiyacı
-    private Double maxEc;          // Tuzluluk / Aşırı gübreleme sınırı
-
-    // --- RÜZGAR PARAMETRELERİ (km/h) ---
-    private Double maxWindSpeed;   // Fiziksel zarar/kırılma sınırı
+    // Fotoğraf URL'si için yeni alan
+    private String imageUrl;
 
     @Column(length = 1000)
-    private String aiSpecialNote;  // Bu bitkiye özel AI tavsiyesi
+    private String aiSpecialNote;
 }
