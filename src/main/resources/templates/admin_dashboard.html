@@ -1,27 +1,35 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Admin Paneli - Ana Sayfa</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<table class="w-full">
-    <thead>
-    <tr>
-        <th>Ad Soyad</th>
-        <th>Email</th>
-        <th>İşlemler</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="user : ${users}">
-        <td th:text="${user.firstName + ' ' + user.lastName}"></td>
-        <td th:text="${user.email}"></td>
-        <td>
-            <a th:href="@{/admin/user/delete/{id}(id=${user.id})}" class="text-red-500">Sil</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<body class="bg-gray-100 flex h-screen overflow-hidden">
+
+<!-- SOL MENÜ (Fragment Kullanımı) -->
+<!-- fragments/admin_sidebar içindeki 'adminSidebar' parçasını çağırıyoruz -->
+<div th:replace="~{fragments/admin_sidebar :: adminSidebar('dashboard')}"></div>
+
+<!-- SAĞ KISIM (KARŞILAMA ALANI) -->
+<main class="flex-1 flex items-center justify-center p-8 bg-gray-50">
+    <div class="max-w-2xl text-center">
+        <!-- İkon -->
+        <div class="mb-6 inline-flex items-center justify-center w-24 h-24 bg-blue-100 text-blue-600 rounded-full shadow-inner">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </div>
+
+        <!-- Karşılama Yazısı -->
+        <h1 class="text-5xl font-extrabold text-gray-800 mb-4 tracking-tight">Hoşgeldin Admin! 👋</h1>
+        <p class="text-xl text-gray-500 leading-relaxed font-light">
+            Smart Farm yönetim sistemine başarıyla giriş yaptın. <br>
+            Sistemi yönetmek için sol menüdeki seçenekleri kullanabilirsin.
+        </p>
+    </div>
+</main>
+
 </body>
 </html>

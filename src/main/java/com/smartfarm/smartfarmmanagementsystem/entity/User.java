@@ -32,4 +32,12 @@ public class User {
     // Bir kullanıcının birden fazla cihazı olabilir (One-To-Many)
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Device> devices;
+
+    // Bir kullanıcının birden fazla forum gönderisi olabilir
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<ForumPost> forumPosts;
+
+    // Bir kullanıcının birden fazla forum yorumu olabilir
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<ForumComment> forumComments;
 }

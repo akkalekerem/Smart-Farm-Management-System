@@ -25,7 +25,7 @@
                     <button th:onclick="'document.getElementById(\'editFieldModal' + ${field.id} + '\').classList.remove(\'hidden\')'" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-100 transition">
                         <i class="fas fa-pen text-xs"></i>
                     </button>
-                    <form th:action="@{'/fields/delete/' + ${field.id}}" method="post" onsubmit="return confirm('Bu tarlayı silmek istediğinize emin misiniz? (Bağlı cihaz silinmez, sadece boşa çıkar)')">
+                    <form th:action="@{'/fields/delete/' + ${field.id}}" method="post" onsubmit="return confirm('Bu tarlayı silmek istediğinize emin misiniz?')">
                         <button type="submit" class="w-8 h-8 bg-red-50 text-red-600 rounded-lg flex items-center justify-center hover:bg-red-100 transition">
                             <i class="fas fa-trash text-xs"></i>
                         </button>
@@ -38,7 +38,8 @@
                     </div>
                     <div>
                         <h2 class="text-xl font-black text-gray-900" th:text="${field.fieldName}">Tarla Adı</h2>
-                        <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest mt-1 inline-block" th:text="${field.cropType}">Ürün</span>
+                        <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest mt-1 inline-block"
+                              th:text="${field.cropType != null and field.cropType != '' ? field.cropType : 'Ürün Seçilmemiş'}">Ürün</span>
                     </div>
                 </div>
 
@@ -58,21 +59,21 @@
                 </a>
 
                 <div th:id="'editFieldModal' + ${field.id}" class="hidden fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[150] flex items-center justify-center">
-                    <div class="bg-white p-8 rounded-[2rem] w-full max-w-md shadow-2xl border border-gray-100 transform transition-all">
+                    <div class="bg-white p-8 rounded-[2rem] w-full max-w-md shadow-2xl border border-gray-100 transform transition-all text-left">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-xl font-black text-gray-900">Tarlayı Düzenle</h3>
                             <button type="button" th:onclick="'document.getElementById(\'editFieldModal' + ${field.id} + '\').classList.add(\'hidden\')'" class="text-gray-400 hover:text-red-500">
                                 <i class="fas fa-times text-xl"></i>
                             </button>
                         </div>
-                        <form th:action="@{'/fields/update/' + ${field.id}}" method="post" class="space-y-5 text-left">
+                        <form th:action="@{'/fields/update/' + ${field.id}}" method="post" class="space-y-5">
                             <div>
                                 <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Tarla Adı</label>
                                 <input type="text" name="fieldName" th:value="${field.fieldName}" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-blue-500" required>
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Ekilen Ürün</label>
+                                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Ekeceğiniz Ürün</label>
                                     <input type="text" name="cropType" th:value="${field.cropType}" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-blue-500" required>
                                 </div>
                                 <div>
@@ -92,22 +93,22 @@
         </div>
 
         <div id="addFieldModal" class="hidden fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[150] flex items-center justify-center">
-            <div class="bg-white p-8 rounded-[2rem] w-full max-w-md shadow-2xl border border-gray-100 transform transition-all">
+            <div class="bg-white p-8 rounded-[2rem] w-full max-w-md shadow-2xl border border-gray-100 transform transition-all text-left">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-xl font-black text-gray-900">Yeni Tarla Ekle</h3>
                     <button type="button" onclick="document.getElementById('addFieldModal').classList.add('hidden')" class="text-gray-400 hover:text-red-500">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
-                <form th:action="@{/fields/add}" method="post" class="space-y-5 text-left">
+                <form th:action="@{/fields/add}" method="post" class="space-y-5">
                     <div>
                         <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Tarla Adı</label>
                         <input type="text" name="fieldName" placeholder="Örn: Güney Domates Serası" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-green-500" required>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Ekilen Ürün</label>
-                            <input type="text" name="cropType" placeholder="Örn: Domates" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-green-500" required>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Ekeceğiniz Ürün</label>
+                            <input type="text" name="cropType" placeholder="Örn: Karpuz" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-700 outline-none focus:border-green-500" required>
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Boyut (Dönüm)</label>

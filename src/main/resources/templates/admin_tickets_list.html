@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gelen Mesajlar | TerraSense Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-[#f8fafc] p-8">
+
+<div class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-10">
+        <div>
+            <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Destek Mesajları</h1>
+            <p class="text-gray-500 font-medium mt-1">Kullanıcılardan gelen tüm yardım taleplerini buradan yönetebilirsin.</p>
+        </div>
+        <div class="bg-blue-50 text-blue-600 px-4 py-2 rounded-2xl font-bold text-sm border border-blue-100">
+            <span th:text="${tickets.size()}">0</span> Toplam Mesaj
+        </div>
+    </div>
+
+    <!-- MESAJ TABLOSU -->
+    <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
+        <table class="w-full text-left">
+            <thead class="bg-gray-50/50 border-b border-gray-100">
+            <tr>
+                <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Gönderen</th>
+                <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Konu</th>
+                <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Mesaj Detayı</th>
+                <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Tarih</th>
+                <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Durum</th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+            <!-- TH:EACH ile her bir mesajı döngüye sokuyoruz -->
+            <tr th:each="ticket : ${tickets}" class="hover:bg-gray-50/50 transition-colors">
+                <td class="px-8 py-6">
+                    <div class="font-bold text-gray-900" th:text="${ticket.sender.firstName + ' ' + ticket.sender.lastName}">Kullanıcı</div>
+                    <div class="text-xs text-gray-400 font-medium" th:text="${ticket.sender.email}">email@mail.com</div>
+                </td>
+                <td class="px-8 py-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-xs font-bold" th:text="${ticket.subject}">Konu</span>
+                </td>
+                <td class="px-8 py-6 text-sm text-gray-600 max-w-xs truncate" th:text="${ticket.message}">
+                    Mesaj içeriği buraya gelecek...
+                </td>
+                <td class="px-8 py-6 text-xs text-gray-400 font-bold"
+                    th:text="${#temporals.format(ticket.createdAt, 'dd.MM.yyyy HH:mm')}">
+                    01.01.2026
+                </td>
+                <td class="px-8 py-6">
+                            <span th:if="${!ticket.isResolved}" class="flex items-center space-x-1 text-orange-500 font-black text-[10px] uppercase tracking-tighter">
+                                <i class="fas fa-circle text-[6px]"></i>
+                                <span>Yanıt Bekliyor</span>
+                            </span>
+                    <span th:if="${ticket.isResolved}" class="flex items-center space-x-1 text-green-500 font-black text-[10px] uppercase tracking-tighter">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Tamamlandı</span>
+                            </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- MESAJ YOKSA GÖRÜNECEK ALAN -->
+        <div th:if="${tickets.isEmpty()}" class="p-20 text-center">
+            <i class="fas fa-inbox text-gray-200 text-6xl mb-4"></i>
+            <p class="text-gray-400 font-bold">Henüz hiç destek mesajı gelmemiş.</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

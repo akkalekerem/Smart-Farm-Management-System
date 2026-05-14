@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Destek Hattı | TerraSense</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+</head>
+<body class="bg-[#fcfdfd]">
+
+<!-- ÜST BAR (İstediğin gibi kaldı) -->
+<header class="fixed top-0 w-full bg-white/80 backdrop-blur-lg z-50 border-b border-gray-100">
+  <div class="max-w-5xl mx-auto px-6 h-20 flex justify-between items-center">
+    <div class="flex items-center space-x-8">
+      <a th:href="@{/}" class="flex items-center space-x-2 text-gray-500 hover:text-green-600 transition-all group">
+        <i class="fas fa-arrow-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+        <span class="font-bold text-sm tracking-tight">Panel'e Dön</span>
+      </a>
+      <div class="h-6 w-[1px] bg-gray-200"></div>
+      <div class="flex items-center space-x-2">
+        <div class="bg-green-600 p-1.5 rounded-lg shadow-sm">
+          <i class="fas fa-leaf text-white text-xs"></i>
+        </div>
+        <span class="text-xl font-extrabold tracking-tighter text-gray-900">TerraSense</span>
+      </div>
+    </div>
+    <div class="flex items-center space-x-3 text-xs font-bold text-gray-400 uppercase tracking-widest">
+      <i class="fas fa-lock text-green-500"></i>
+      <span>Güvenli Destek Hattı</span>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-3xl mx-auto px-6 pt-32 pb-20">
+  <!-- FORM KUTUSU -->
+  <div class="bg-white p-10 md:p-14 rounded-[3rem] border border-gray-100 shadow-sm relative overflow-hidden">
+
+    <!-- Sağ üstte hafif bir dekoratif ikon -->
+    <div class="absolute -top-6 -right-6 w-32 h-32 bg-blue-50 rounded-full flex items-center justify-center">
+      <i class="fas fa-headset text-blue-100 text-6xl mt-6 mr-6"></i>
+    </div>
+
+    <div class="relative">
+      <div class="mb-12">
+        <h3 class="text-3xl font-extrabold text-gray-900 tracking-tight">Size nasıl yardımcı olabiliriz?</h3>
+        <p class="text-base text-gray-400 font-medium mt-2">Sorununuzu bize iletin, teknik ekibimiz en kısa sürede çözüm üretsin.</p>
+      </div>
+
+      <!-- BAŞARI BİLDİRİMİ -->
+      <div th:if="${param.success}" class="mb-10 p-6 bg-green-50 rounded-[2rem] border border-green-100 flex items-center space-x-4 animate-pulse">
+        <div class="bg-green-500 p-2 rounded-full text-white">
+          <i class="fas fa-check text-xs"></i>
+        </div>
+        <p class="text-sm font-bold text-green-800">Talebiniz başarıyla sıraya alındı!</p>
+      </div>
+
+      <form th:action="@{/support/send}" method="post" class="space-y-10">
+        <!-- KONU -->
+        <div class="space-y-3">
+          <label class="text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Görüşme Konusu</label>
+          <input type="text" name="subject" required
+                 class="w-full p-5 bg-gray-50 rounded-[1.8rem] border border-gray-100 font-bold text-gray-700 outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all text-lg"
+                 placeholder="Örn: Akıllı Sensör Bağlantı Sorunu">
+        </div>
+
+        <!-- MESAJ -->
+        <div class="space-y-3">
+          <label class="text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Mesaj Detayları</label>
+          <textarea name="message" rows="7" required
+                    class="w-full p-6 bg-gray-50 rounded-[2rem] border border-gray-100 font-bold text-gray-700 outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all resize-none text-lg"
+                    placeholder="Lütfen yaşadığınız durumu adım adım açıklayın..."></textarea>
+        </div>
+
+        <!-- GÖNDER BUTONU -->
+        <div class="pt-4">
+          <button type="submit"
+                  class="w-full bg-gray-900 text-white px-10 py-5 rounded-[2rem] text-sm font-black uppercase tracking-widest hover:bg-blue-600 hover:-translate-y-1 active:scale-[0.98] transition-all shadow-2xl shadow-gray-200 flex items-center justify-center space-x-4">
+            <span>Destek Talebini Gönder</span>
+            <i class="fas fa-paper-plane text-xs"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ALT BİLGİ -->
+  <div class="mt-10 flex flex-col md:flex-row items-center justify-between px-10 text-gray-400">
+    <div class="flex items-center space-x-4 mb-4 md:mb-0 text-sm font-medium">
+      <i class="fas fa-clock"></i>
+      <span>Mesai Saatleri: 09:00 - 18:00</span>
+    </div>
+    <div class="text-xs font-bold tracking-widest uppercase">
+      TerraSense <span class="text-green-500">Care</span>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

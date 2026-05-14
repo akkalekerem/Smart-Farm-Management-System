@@ -1,21 +1,61 @@
-<div th:replace="~{layout :: layout(~{::section}, 'Bildirimler')}">
-  <section>
-    <div class="flex justify-between items-center mb-10">
-      <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Bildirimler</h1>
-      <button class="text-xs font-bold text-gray-400 hover:text-green-600 uppercase tracking-widest">Tümünü Okundu İşaretle</button>
-    </div>
+<div th:replace="~{layout :: layout(~{::section}, 'Bildirimler')}" xmlns:th="http://www.w3.org/1999/xhtml">
+    <section>
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">AI Analiz Paneli</h1>
+                <p class="text-gray-500 mt-1">Yapay zeka asistanınızdan gelen tarlaya özel tavsiyeler.</p>
+            </div>
+            <div class="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl border border-indigo-100 font-bold text-sm shadow-sm flex items-center">
+                <i class="fas fa-robot mr-2"></i> <span th:text="${notifications.size()}">0</span> Analiz Mevcut
+            </div>
+        </div>
 
-    <div class="space-y-4">
-      <div class="bg-amber-50 p-6 rounded-2xl border border-amber-100 flex items-start space-x-4">
-        <div class="bg-amber-100 p-3 rounded-xl text-amber-600">
-          <i class="fas fa-exclamation-triangle"></i>
+        <div class="space-y-4">
+            <div th:if="${notifications.isEmpty()}" class="bg-white p-12 rounded-[2rem] border border-dashed border-gray-200 text-center shadow-sm">
+                <div class="w-20 h-20 bg-indigo-50 text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-microchip text-3xl animate-pulse"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900">Henüz bir AI analizi oluşturulmadı</h3>
+                <p class="text-gray-500">Tarla detay sayfasına girip 15-20 saniye beklerseniz, yapay zeka ilk raporunu buraya düşürecektir.</p>
+            </div>
+
+            <div th:each="note : ${notifications}"
+                 th:classappend="${!note.isRead} ? 'border-l-4 border-l-indigo-500 bg-indigo-50/20' : 'bg-white'"
+                 class="p-6 rounded-2xl border border-gray-100 shadow-sm transition-all hover:shadow-md relative overflow-hidden group">
+
+                <div class="absolute -right-4 -bottom-4 text-indigo-500/5 text-7xl transform -rotate-12 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-brain"></i>
+                </div>
+
+                <div class="flex items-start justify-between relative z-10">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm transition-colors"
+                             th:classappend="${note.message.contains('🤖')} ? 'bg-indigo-100 text-indigo-600' : 'bg-green-100 text-green-600'">
+                            <i th:class="${note.message.contains('🤖')} ? 'fas fa-robot' : 'fas fa-seedling'" class="text-2xl"></i>
+                        </div>
+
+                        <div class="flex-1">
+                            <p class="text-gray-800 font-semibold leading-relaxed text-base italic"
+                               th:text="${note.message}">AI Mesajı buraya gelecek...</p>
+
+                            <div class="flex items-center mt-3 space-x-4">
+                                <span class="text-[11px] font-bold uppercase tracking-widest text-gray-400 flex items-center">
+                                    <i class="far fa-clock mr-1.5"></i>
+                                    <span th:text="${#temporals.format(note.timestamp, 'dd MMMM yyyy HH:mm')}">Tarih</span>
+                                </span>
+
+                                <span th:if="${!note.isRead}" class="bg-indigo-600 text-white text-[9px] px-2.5 py-0.5 rounded-full font-black uppercase tracking-tighter">
+                                    YENİ RAPOR
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="text-gray-300 hover:text-red-500 transition-colors ml-4 p-2">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
         </div>
-        <div>
-          <p class="text-sm font-black text-amber-900 uppercase">Don Uyarısı!</p>
-          <p class="text-amber-800 text-sm mt-1">Güney Domates Serası'nda sıcaklık 4°C altına düştü. Isıtma sistemini kontrol edin.</p>
-          <p class="text-[10px] text-amber-600 font-bold mt-2">15 DAKİKA ÖNCE</p>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
 </div>
