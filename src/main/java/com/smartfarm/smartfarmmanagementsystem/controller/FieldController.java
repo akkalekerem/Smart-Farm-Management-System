@@ -43,7 +43,8 @@ public class FieldController {
         return "pages/index";
     }
 
-    // YENİ TARLA EKLEME
+    // YENİ TARLA EKLEMEgemıbı
+
     @PostMapping("/fields/add")
     public String addField(@RequestParam String fieldName,
                            @RequestParam String cropType,
