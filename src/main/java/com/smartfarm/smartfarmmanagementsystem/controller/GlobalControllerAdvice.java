@@ -1,36 +1,31 @@
 package com.smartfarm.smartfarmmanagementsystem.controller;
 
 import com.smartfarm.smartfarmmanagementsystem.entity.User;
-import com.smartfarm.smartfarmmanagementsystem.service.UserService;
+import com.smartfarm.smartfarmmanagementsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.ui.Model;
+import java.security.Principal;
 
 @ControllerAdvice
 @RequiredArgsConstructor
 public class GlobalControllerAdvice {
 
-    private final UserService userService;
+    private final UserRepository userRepository;
 
-    @ModelAttribute
-    public void addGlobalAttributes(Model model, Authentication authentication) {
-        if (authentication != null && authentication.isAuthenticated()) {
-            String email = authentication.getName();
-            User user = userService.findByEmail(email);
+    @ModelAttribute("user")
+    public User addUserToModel(Principal principal) {
+        if (principal != null) {
+            User user = userRepository.findByEmail(principal.getName()).orElse(null);
 
+            // EĞER VERİTABANINDA NULL KALMIŞ ALANLAR VARSA VARSAYILAN ATAYALIM
             if (user != null) {
-                model.addAttribute("userName", user.getFirstName());
-                model.addAttribute("user", user); // Hem profil hem ayarlar için lazım
-
-                boolean isAdmin = authentication.getAuthorities().stream()
-                        .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-                model.addAttribute("isAdmin", isAdmin);
+                if (user.getDarkModeActive() == null) user.setDarkModeActive(false);
+                if (user.getWantsEmailReports() == null) user.setWantsEmailReports(true);
+                if (user.getTemperatureUnit() == null) user.setTemperatureUnit("Celsius");
             }
-        } else {
-            model.addAttribute("userName", "Misafir");
-            model.addAttribute("isAdmin", false);
+            return user;
         }
+        return null;
     }
 }
