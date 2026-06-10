@@ -24,6 +24,7 @@ public class UserService {
     // ==========================================
     // 1. CREATE (Oluşturma İşlemleri)
     // ==========================================
+    @Transactional
     public User registerUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.USER);
