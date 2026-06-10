@@ -21,7 +21,7 @@ public class NotificationController {
     private final NotificationRepository notificationRepository;
     private final UserService userService;
 
-    // Bildirimler Sayfasını Görüntüle
+    // Bildirimler Sayfasını Görüntüler
     @GetMapping("/notifications")
     public String showNotifications(Model model, Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {
@@ -37,14 +37,14 @@ public class NotificationController {
         return "pages/notifications";
     }
 
-    // Tekli Bildirim Silme (Opsiyonel: HTML'deki çarpı butonuna bağlayabilirsin)
+    // Tekli Bildirim Silme
     @PostMapping("/notifications/delete/{id}")
     public String deleteNotification(@PathVariable Long id) {
         notificationRepository.deleteById(id);
         return "redirect:/notifications";
     }
 
-    // Tümünü Okundu İşaretle (Opsiyonel özellik)
+    // Tümünü Okundu İşaretler
     @PostMapping("/notifications/read-all")
     public String markAllAsRead(Authentication authentication) {
         User currentUser = userService.findByEmail(authentication.getName());

@@ -37,7 +37,7 @@
                 th:text="${usedRam != null ? usedRam + ' MB / ' + totalRam + ' MB' : 'Yükleniyor...'}">0 MB / 0 MB</span>
         </div>
         <div class="w-full bg-gray-900 rounded-full h-4 border border-gray-600 overflow-hidden">
-          <!-- HATA BURADAYDI: Matematik işlemine null kontrolü ekledik -->
+          <!-- Matematik işlemine null kontrolü ekledik -->
           <div id="ram-bar" class="bg-blue-500 h-4 transition-all duration-1000 ease-out"
                th:style="'width: ' + (${usedRam != null && totalRam != null ? (usedRam * 100 / totalRam) : 0}) + '%'"></div>
         </div>

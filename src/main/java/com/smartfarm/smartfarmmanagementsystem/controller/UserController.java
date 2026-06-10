@@ -30,9 +30,9 @@ public class UserController {
     private final DeviceRepository deviceRepository; // İstatistik için eklendi
     private final PasswordEncoder passwordEncoder;
 
-    // ==========================================
+
     // PROFİL SAYFASI (GET) - İstatistikler Eklendi
-    // ==========================================
+
     @GetMapping("/profile")
     public String profilePage(Model model, Principal principal) {
         // Giriş yapan kullanıcıyı buluyoruz
