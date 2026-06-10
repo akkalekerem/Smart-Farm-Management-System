@@ -26,6 +26,12 @@ public class User {
     private String firstName;
     private String lastName;
 
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "city")
+    private String city;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -40,4 +46,14 @@ public class User {
     // Bir kullanıcının birden fazla forum yorumu olabilir
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<ForumComment> forumComments;
+
+    @Column(name = "temperature_unit")
+    private String temperatureUnit = "Celsius"; // Varsayılan değer Celsius olsun
+
+    @Column(name = "wants_email_reports")
+    private Boolean wantsEmailReports = true; // Varsayılan olarak bildirimler açık olsun
+
+    @Column(name = "dark_mode_active")
+    private Boolean darkModeActive = false; // Varsayılan olarak açık tema (karanlık mod kapalı)
+
 }

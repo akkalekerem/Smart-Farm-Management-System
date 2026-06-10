@@ -13,4 +13,7 @@ public interface FieldRepository extends JpaRepository<Field, Long> {
     // Giriş yapan çiftçinin (User) sahip olduğu tüm tarlaları liste halinde getirir
     List<Field> findByOwner(User owner);
 
+    // İstatistik için eklememiz gereken satır:
+    long countByOwner(User user);
+
 }
