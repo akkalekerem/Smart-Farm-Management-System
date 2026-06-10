@@ -21,18 +21,16 @@ public class UserService {
     // manuel silmek/çekmek istersen ileride buraya ForumPostRepository
     // ve ForumCommentRepository de ekleyebiliriz.
 
-    // ==========================================
+
     // 1. CREATE (Oluşturma İşlemleri)
-    // ==========================================
     public User registerUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.USER);
         return userRepository.save(user);
     }
 
-    // ==========================================
+
     // 2. READ (Okuma / Listeleme İşlemleri)
-    // ==========================================
 
     // Admin panelindeki tablo için tüm kullanıcıları getirir
     public List<User> getAllUsers() {
@@ -49,9 +47,8 @@ public class UserService {
         return userRepository.findByEmail(email).orElse(null);
     }
 
-    // ==========================================
+
     // 3. UPDATE (Güncelleme İşlemleri)
-    // ==========================================
 
     // Adminin bir kullanıcının rolünü, e-postasını veya adını değiştirmesi için
     public User updateUser(User user) {
@@ -59,17 +56,13 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // ==========================================
     // 4. DELETE (Silme İşlemleri)
-    // ==========================================
 
     @Transactional // İlişkili veriler silinirken hata çıkarsa işlemi geri alır (güvenlik için)
     public void deleteUser(Long userId) {
         // ÖNEMLİ NOT: Bir kullanıcıyı silmeden önce, veritabanı yapısına (Entity) göre
-        // kullanıcının tarlalarını, forum postlarını ve yorumlarını ya silmen
-        // ya da "Anonim Kullanıcı"ya devretmen gerekir.
-        // Eğer User.java entity dosyasında gönderiler için CascadeType.ALL ve orphanRemoval=true
-        // kullandıysan, bu satır otomatik olarak adamın her şeyini silecektir.
+        // kullanıcının tarlalarını, forum postlarını ve yorumlarını ya silme ya da "Anonim Kullanıcı"ya devretmemiz gerekir.
+        //  User.java entity dosyasında gönderiler için CascadeType.ALL ve orphanRemoval=true olduğundan bu satır otomatik olarak adamın her şeyini silecektir.
 
         userRepository.deleteById(userId);
     }

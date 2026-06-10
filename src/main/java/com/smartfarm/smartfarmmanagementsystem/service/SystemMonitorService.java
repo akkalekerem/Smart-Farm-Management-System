@@ -11,9 +11,9 @@ public class SystemMonitorService {
     // Gerçek zamanlı CPU kullanım yüzdesini çeker
     public double getCpuUsage() {
         OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
-        double cpuLoad = osBean.getCpuLoad() * 100; // 0.0 ile 1.0 arası döner, 100 ile çarpıyoruz
+        double cpuLoad = osBean.getCpuLoad() * 100; //
 
-        // Eğer sistem ilk açılışta okuyamazsa NaN döner, onu 0.0 olarak düzeltiyoruz
+
         return Double.isNaN(cpuLoad) || cpuLoad < 0 ? 0.0 : Math.round(cpuLoad * 10.0) / 10.0;
     }
 

@@ -52,7 +52,7 @@ public class Device {
 
     // --- İLİŞKİLER ---
 
-    // Bu cihaz hangi çiftçiye (User) ait?
+    // Bu cihaz hangi çiftçiye (User) ait
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User owner;

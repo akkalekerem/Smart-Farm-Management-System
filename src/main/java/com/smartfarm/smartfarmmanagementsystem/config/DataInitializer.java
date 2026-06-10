@@ -33,11 +33,8 @@ public class DataInitializer {
                 userRepository.save(admin);
             }
 
-            // Ürün Kütüphanesi Yüklemesi (Fiyat bilgileri temizlendi)
-            // 2. ADIM: ÜRÜN KÜTÜPHANESİ (Sadece Teknik Notlar)
-            // 2. ADIM: ÜRÜN KÜTÜPHANESİ (Sadece Teknik Notlar)
-            // 2. ADIM: ÜRÜN KÜTÜPHANESİ (Sadece Teknik ve Biyolojik Notlar)
-            // 2. ADIM: ÜRÜN KÜTÜPHANESİ (Fotoğraf Linkleri İçin Güncellendi)
+            // Ürün Kütüphanesi Yüklemesi
+
             if (cropRepository.count() <= 3) {
                 cropRepository.deleteAll();
 

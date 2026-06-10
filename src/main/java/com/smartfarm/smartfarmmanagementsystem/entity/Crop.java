@@ -27,8 +27,6 @@ public class Crop {
     private Double minEc;
     private Double maxEc;
     private Double maxWindSpeed;
-
-    // Fotoğraf URL'si için yeni alan
     private String imageUrl;
 
     @Column(length = 1000)

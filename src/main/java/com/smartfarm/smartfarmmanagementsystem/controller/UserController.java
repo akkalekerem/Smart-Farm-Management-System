@@ -33,18 +33,16 @@ public class UserController {
         return "user/settings";
     }
 
-    // ==========================================
+
     // DESTEK TALEBİ SAYFASI (GET)
-    // ==========================================
     @GetMapping("/support")
     public String supportPage(Model model) {
         model.addAttribute("activePage", "support");
         return "user/user_support"; // templates içindeki dosya adın
     }
 
-    // ==========================================
+
     // DESTEK TALEBİ GÖNDERME (POST)
-    // ==========================================
     @PostMapping("/support/send")
     public String sendTicket(@RequestParam String subject,
                              @RequestParam String message,

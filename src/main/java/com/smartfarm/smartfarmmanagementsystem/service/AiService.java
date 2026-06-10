@@ -29,7 +29,7 @@ public class AiService {
     public String getFarmInsight(String fieldName, String cropType, double temp, double moisture, double wind, double light, double ec) {
         String bitkiAdi = (cropType != null && !cropType.isEmpty()) ? cropType : "bitkiler";
 
-        // Tüm sensör verilerini içeren uzman seviyesi prompt
+        // Tüm sensör verilerini içeren prompt
         String prompt = String.format(
                 "ROL: Uzman Ziraat Mühendisi ve Tarımsal Veri Analisti.\n" +
                         "BAĞLAM: '%s' isimli tarlada %s yetiştiriliyor.\n" +
@@ -42,7 +42,6 @@ public class AiService {
 
         try {
             // 2. GÜVENLİ JSON OLUŞTURMA (Manual String birleştirme yerine Map kullanıyoruz)
-            // Bu yapı 404/400 hatalarının en büyük sebebi olan tırnak işareti sorunlarını çözer.
             Map<String, Object> textPart = Map.of("text", prompt);
             Map<String, Object> partList = Map.of("parts", List.of(textPart));
             Map<String, Object> contentList = Map.of("contents", List.of(partList));

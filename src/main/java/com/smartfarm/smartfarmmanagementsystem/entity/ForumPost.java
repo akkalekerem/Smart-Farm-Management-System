@@ -25,7 +25,7 @@ public class ForumPost {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content; // Konu İçeriği (Uzun metin olabileceği için TEXT)
 
-    private String category; // Örn: "Sulama Teknikleri", "Zararlılarla Mücadele"
+    private String category;
 
     @CreationTimestamp // Kayıt eklendiğinde o anki zamanı otomatik atar
     @Column(updatable = false)
