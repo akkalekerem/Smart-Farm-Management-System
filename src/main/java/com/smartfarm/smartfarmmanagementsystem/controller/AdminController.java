@@ -24,26 +24,22 @@ public class AdminController {
     private final SystemMonitorService systemMonitorService;
     private final TicketRepository ticketRepository;
 
-    // ==========================================
+
     // 1. ADMIN ANA GİRİŞ SAYFASI
-    // ==========================================
     @GetMapping("")
     public String adminIndex() {
         return "admin_dashboard";
     }
 
-    // ==========================================
+
     // 2. KULLANICI LİSTESİ
-    // ==========================================
     @GetMapping("/users")
     public String listUsers(Model model) {
         model.addAttribute("users", userService.getAllUsers());
         return "admin_users_list";
     }
 
-    // ==========================================
     // 3. KULLANICI DETAY SAYFASI
-    // ==========================================
     @GetMapping("/user/detail/{id}")
     public String userDetail(@PathVariable Long id, Model model) {
         User user = userService.findById(id);
@@ -54,36 +50,31 @@ public class AdminController {
         return "admin_user_detail";
     }
 
-    // ==========================================
     // 4. KULLANICI SİLME İŞLEMİ
-    // ==========================================
     @GetMapping("/user/delete/{id}")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return "redirect:/admin/users";
     }
 
-    // ==========================================
+
     // 5. CİHAZ YÖNETİMİ (FİLO KONTROLÜ)
-    // ==========================================
     @GetMapping("/devices")
     public String listDevices(Model model) {
         model.addAttribute("devices", deviceService.getAllDevices());
         return "admin_devices_list";
     }
 
-    // ==========================================
+
     // 6. AĞ VE SİSTEM SAĞLIĞI (SAYFAYI AÇAN METOT)
-    // ==========================================
     @GetMapping("/network")
     public String networkHealth() {
         // Bu metot sadece iskelet HTML'i (admin_network_health.html) yükler
         return "admin_network_health";
     }
 
-    // ==========================================
+
     // 6.1 SİSTEM VERİLERİ (API ENDPOINT - JSON)
-    // ==========================================
     @GetMapping("/api/network-data")
     @ResponseBody
     public Map<String, Object> getNetworkData() {
@@ -95,9 +86,8 @@ public class AdminController {
         return data;
     }
 
-    // ==========================================
+
     // 7. DESTEK TALEPLERİ LİSTESİ
-    // ==========================================
     @GetMapping("/support") // /admin/support adresini dinler
     public String listTickets(Model model) {
         // Tüm ticket'ları çekip sayfaya gönderiyoruz

@@ -75,7 +75,6 @@
       </tr>
       <!-- Varsa listele -->
       <tr th:each="comment : ${user.forumComments}" class="hover:bg-gray-50 border-b text-sm">
-        <!-- İŞTE BURASI DÜZELTİLDİ: comment.forumPost.title -> comment.post.title -->
         <td class="p-3 text-blue-600 text-xs font-semibold" th:text="${comment.post.title}">Post Başlığı</td>
         <td class="p-3 text-gray-700" th:text="${comment.content}">Yorum içeriği burada yer alacak...</td>
       </tr>

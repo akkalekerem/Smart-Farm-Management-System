@@ -71,7 +71,7 @@ public class FieldController {
         return "redirect:/";
     }
 
-    // --- TARLA SİLME (404 HATASINI ÇÖZEN KISIM) ---
+    // --- TARLA SİLME  ---
     @PostMapping("/fields/delete/{id}")
     public String deleteField(@PathVariable("id") Long id) {
         fieldRepository.deleteById(id);
@@ -79,7 +79,7 @@ public class FieldController {
         return "redirect:/";
     }
 
-    // --- TARLA GÜNCELLEME (HATA ALMAMAK İÇİN EKLENDİ) ---
+    // --- TARLA GÜNCELLEME  ---
     @PostMapping("/fields/update/{id}")
     public String updateField(@PathVariable("id") Long id,
                               @RequestParam String fieldName,
@@ -123,12 +123,13 @@ public class FieldController {
 
         long currentTime = System.currentTimeMillis();
         if (currentTime - state.lastAiCheckTime > 15000) {
-            String aiComment = aiService.getFarmInsight(field.getFieldName(), field.getCropType(), state.temp, state.moisture, state.wind);
+            String aiComment = aiService.getFarmInsight(field.getFieldName(), field.getCropType(), state.temp, state.moisture, state.wind, state.light, state.ec);
             if (aiComment != null && !aiComment.isEmpty()) {
                 createNotification(currentUser, "🤖 AI Danışman: " + aiComment);
             }
             state.lastAiCheckTime = currentTime;
         }
+
 
         Map<String, Object> data = new HashMap<>();
         data.put("temperature", String.format(Locale.US, "%.1f", state.temp));

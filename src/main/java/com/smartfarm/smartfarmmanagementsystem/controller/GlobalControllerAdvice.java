@@ -18,7 +18,6 @@ public class GlobalControllerAdvice {
         if (principal != null) {
             User user = userRepository.findByEmail(principal.getName()).orElse(null);
 
-            // EĞER VERİTABANINDA NULL KALMIŞ ALANLAR VARSA VARSAYILAN ATAYALIM
             if (user != null) {
                 if (user.getDarkModeActive() == null) user.setDarkModeActive(false);
                 if (user.getWantsEmailReports() == null) user.setWantsEmailReports(true);
