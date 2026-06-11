@@ -41,6 +41,7 @@ public class AdminController {
     }
 
 
+
     // 3. KULLANICI DETAY SAYFASI
     @GetMapping("/user/detail/{id}")
     public String userDetail(@PathVariable Long id, Model model) {
