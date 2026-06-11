@@ -19,13 +19,13 @@ public class ForumController {
     // 1. Forum Anasayfası (Tüm konuları listeler)
     @GetMapping
     public String forumHome(Model model) {
-        // Servisten tüm konuları çekip, Thymeleaf'in okuyabilmesi için "posts" adıyla modele ekliyoruz
+        // Servisten tüm konuları çekip, Thymeleaf'in okuyabilmesi için "posts" adıyla modele ekledik
         model.addAttribute("posts", forumService.getAllPosts());
         model.addAttribute("activePage", "forum");
         return "pages/forum";
     }
 
-    // 2. Yeni Konu Açma İşlemi (Formdan gelen veriyi yakalar)
+    // 2. Yeni Konu Açma İşlemi
     @PostMapping("/add")
     public String createPost(@RequestParam String title,
                              @RequestParam String category,

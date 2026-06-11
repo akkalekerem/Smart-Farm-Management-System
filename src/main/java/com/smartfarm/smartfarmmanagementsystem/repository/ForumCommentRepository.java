@@ -10,7 +10,6 @@ import java.util.List;
 public interface ForumCommentRepository extends JpaRepository<ForumComment, Long> {
 
     // Sadece tıkladığımız bir konunun (post) altındaki yorumları
-    // eskiden yeniye doğru sıralayarak getirmemizi sağlayacak metod:
     List<ForumComment> findByPostIdOrderByCreatedAtAsc(Long postId);
 
 }

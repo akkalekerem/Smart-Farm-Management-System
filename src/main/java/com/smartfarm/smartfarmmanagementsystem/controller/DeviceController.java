@@ -61,14 +61,14 @@ public class DeviceController {
         return "redirect:/devices";
     }
 
-    // CİHAZ SİLME
+    // Cihaz Silme
     @PostMapping("/devices/delete/{id}")
     public String deleteDevice(@PathVariable("id") Long id) {
         deviceRepository.deleteById(id);
         return "redirect:/devices";
     }
 
-    // CİHAZ GÜNCELLEME
+    // Cihaz Güncelleme
     @PostMapping("/devices/update/{id}")
     public String updateDevice(@PathVariable("id") Long id,
                                @RequestParam String deviceName,

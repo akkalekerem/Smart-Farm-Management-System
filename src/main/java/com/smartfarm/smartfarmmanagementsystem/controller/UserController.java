@@ -33,9 +33,8 @@ public class UserController {
     private final FieldRepository fieldRepository;
     private final DeviceRepository deviceRepository;
 
-    // ==========================================
+
     // PROFİL SAYFASI (GET)
-    // ==========================================
     @GetMapping("/profile")
     public String profilePage(Model model, Principal principal) {
         // Giriş yapan kullanıcıyı buluyoruz

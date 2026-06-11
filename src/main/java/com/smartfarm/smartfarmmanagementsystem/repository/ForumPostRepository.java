@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface ForumPostRepository extends JpaRepository<ForumPost, Long> {
 
-    // Forum konularını en yeniden en eskiye doğru sıralayarak getirmemizi sağlayacak özel metod:
+    // Forum konularını en yeniden en eskiye doğru sıralayarak getirmemizi sağlayacak metod:
     List<ForumPost> findAllByOrderByCreatedAtDesc();
 
 }

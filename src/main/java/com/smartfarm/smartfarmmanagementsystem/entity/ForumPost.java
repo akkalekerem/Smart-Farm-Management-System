@@ -24,7 +24,7 @@ public class ForumPost {
     private String title; // Konu Başlığı
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String content; // Konu İçeriği (Uzun metin olabileceği için TEXT)
+    private String content; // Konu İçeriği
 
     private String category;
 
