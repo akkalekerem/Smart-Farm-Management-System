@@ -53,9 +53,7 @@ public class UserController {
         return "user/profile";
     }
 
-    // ==========================================
     // PROFİL GÜNCELLEME (POST)
-    // ==========================================
     @PostMapping("/user/profile/update")
     public String updateProfile(@RequestParam String firstName,
                                 @RequestParam String lastName,
@@ -73,39 +71,36 @@ public class UserController {
         return "redirect:/profile?success=profileUpdated";
     }
 
-    // ==========================================
+
     // HESABI KALICI OLARAK SİL (POST)
-    // ==========================================
     @PostMapping("/user/profile/delete")
     public String deleteAccount(Principal principal, HttpServletRequest request, HttpServletResponse response) {
         User user = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
 
-        // UserService üzerinden kullanıcıyı ve ona bağlı tüm verileri kalıcı olarak sil
+        // UserService üzerinden kullanıcıyı ve ona bağlı tüm verileri kalıcı olarak siler
         userService.deleteUser(user.getId());
 
-        // Kullanıcının mevcut oturumunu sonlandır (logout)
+        // Kullanıcının mevcut oturumunu sonlandırır (logout)
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
 
-        // Başarılı silme mesajıyla login ekranına yönlendir
+        // Başarılı silme mesajıyla login ekranına yönlendirir
         return "redirect:/login?deleted=true";
     }
 
-    // ==========================================
+
     // DESTEK TALEBİ SAYFASI (GET)
-    // ==========================================
     @GetMapping("/support")
     public String supportPage(Model model) {
         model.addAttribute("activePage", "support");
         return "user/user_support";
     }
 
-    // ==========================================
+
     // DESTEK TALEBİ GÖNDERME (POST)
-    // ==========================================
     @PostMapping("/support/send")
     public String sendTicket(@RequestParam String subject,
                              @RequestParam String message,
