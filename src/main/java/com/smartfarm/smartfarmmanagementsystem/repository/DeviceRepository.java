@@ -12,4 +12,7 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
 
     // Giriş yapan çiftçinin (User) sahip olduğu tüm cihazları liste halinde getirir
     List<Device> findByOwner(User owner);
+
+    // Profil istatistikleri (Cihaz sayısı) için gerekli olan metod:
+    long countByOwner(User owner);
 }

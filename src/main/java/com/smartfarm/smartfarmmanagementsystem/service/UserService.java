@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class UserService {
     // 1. CREATE (Oluşturma İşlemleri)
     public User registerUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        // Hatanın çözümü için String yerine Enum kullanıyoruz:
         user.setRole(Role.USER);
         return userRepository.save(user);
     }
