@@ -2,47 +2,119 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>TerraSense | Kayıt Ol</title>
+    <title>TerraSense - Kayıt Ol</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Inter', sans-serif; }</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-50 flex items-center justify-center min-h-screen">
-<div class="bg-white p-10 rounded-3xl shadow-xl w-full max-w-md border border-gray-100">
-    <div class="text-center mb-8">
-        <h1 class="text-3xl font-black text-gray-900 tracking-tight">TerraSense</h1>
-        <p class="text-gray-500 mt-2 font-medium">Çiftçi Kayıt Formu</p>
+<body class="bg-gray-50 h-screen font-sans overflow-hidden">
+
+<div class="flex h-full w-full">
+
+    <div class="w-full md:w-1/2 flex items-center justify-center px-8 sm:px-16 lg:px-24 bg-white h-full overflow-y-auto">
+        <div class="w-full max-w-md space-y-6 py-8">
+
+            <div class="flex md:hidden items-center justify-center space-x-2 text-gray-900 mb-4">
+                <i class="fas fa-seedling text-3xl text-green-600"></i>
+                <span class="text-2xl font-black tracking-wider">Terra<span class="text-green-600">Sense</span></span>
+            </div>
+
+            <div>
+                <h1 class="text-3xl font-black text-gray-900 tracking-tight">Aramıza Katılın</h1>
+                <p class="text-sm text-gray-400 mt-2">Akıllı tarım dünyasında yerinizi almak için hemen kayıt olun.</p>
+            </div>
+
+            <div th:if="${error}" class="p-4 bg-red-50 rounded-2xl border border-red-100 flex items-center space-x-3 text-red-600 text-sm">
+                <i class="fas fa-exclamation-circle text-base"></i>
+                <span th:text="${error}">E-posta adresi zaten kullanımda!</span>
+            </div>
+
+            <form th:action="@{/register}" th:object="${user}" method="POST" class="space-y-4">
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Adınız</label>
+                        <input type="text" th:field="*{firstName}" required
+                               class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition-all text-gray-900 font-medium"
+                               placeholder="Ahmet">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Soyadınız</label>
+                        <input type="text" th:field="*{lastName}" required
+                               class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition-all text-gray-900 font-medium"
+                               placeholder="Yılmaz">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">E-Posta Adresi</label>
+                    <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
+                                <i class="far fa-envelope"></i>
+                            </span>
+                        <input type="email" th:field="*{email}" required
+                               class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition-all text-gray-900 font-medium"
+                               placeholder="ornek@domain.com">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Şifre Belirleyin</label>
+                    <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
+                                <i class="far fa-lock-alt"></i>
+                            </span>
+                        <input type="password" th:field="*{password}" required
+                               class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition-all text-gray-900 font-medium"
+                               placeholder="••••••••">
+                    </div>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit"
+                            class="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-2xl font-bold text-sm shadow-lg shadow-green-600/20 transition-all transform active:scale-[0.98]">
+                        Hesap Oluştur
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center pt-2">
+                <p class="text-sm text-gray-500">
+                    Zaten bir hesabınız var mı ?
+                    <a th:href="@{/login}" class="text-green-600 font-bold hover:underline ml-1">Giriş Yap</a>
+                </p>
+            </div>
+
+        </div>
     </div>
 
-    <form th:action="@{/register}" method="post" class="space-y-5">
-        <div>
-            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Adınız</label>
-            <input type="text" name="firstName" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 outline-none transition" required>
+    <div class="hidden md:flex md:w-1/2 relative h-full bg-green-900">
+        <img src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=1740&auto=format&fit=cover"
+             alt="TerraSense Bereketli Filizler"
+             class="absolute inset-0 w-full h-full object-cover opacity-85">
+
+        <div class="absolute inset-0 bg-gradient-to-t from-green-950/90 via-transparent to-black/30"></div>
+
+        <div class="absolute bottom-16 left-16 right-16 text-white z-10">
+            <div class="flex items-center space-x-3 mb-4">
+                    <span class="bg-green-500/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold tracking-wider text-green-300 uppercase">
+                        Sürdürülebilir Üretim
+                    </span>
+            </div>
+            <h2 class="text-4xl font-extrabold leading-tight tracking-tight mb-4">
+                Her Bir Filizde <br>Veriyi Keşfedin.
+            </h2>
+            <p class="text-gray-300 text-sm max-w-md leading-relaxed">
+                Toprağınızın nemini, sıcaklığını ve besin değerlerini eşzamanlı ölçerek kayıpları engelleyin. Bilinçli tarım, güçlü gelecek.
+            </p>
         </div>
 
-        <div>
-            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Soyadınız</label>
-            <input type="text" name="lastName" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 outline-none transition" required>
+        <div class="absolute top-12 right-12 flex items-center space-x-2 text-white z-10">
+            <i class="fas fa-seedling text-3xl text-green-400"></i>
+            <span class="text-2xl font-black tracking-wider">Terra<span class="text-green-400">Sense</span></span>
         </div>
+    </div>
 
-        <div>
-            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">E-posta</label>
-            <input type="email" name="email" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 outline-none transition" required>
-        </div>
-
-        <div>
-            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Şifre</label>
-            <input type="password" name="password" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 outline-none transition" required>
-        </div>
-
-        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-green-100 transition-all active:scale-95">
-            Kayıt Ol
-        </button>
-    </form>
-
-    <p class="text-center mt-6 text-sm text-gray-500">
-        Zaten hesabın var mı? <a th:href="@{/login}" class="text-green-600 font-bold hover:underline">Giriş Yap</a>
-    </p>
 </div>
+
 </body>
 </html>

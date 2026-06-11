@@ -39,6 +39,7 @@ public class AdminController {
         return "admin_users_list";
     }
 
+
     // 3. KULLANICI DETAY SAYFASI
     @GetMapping("/user/detail/{id}")
     public String userDetail(@PathVariable Long id, Model model) {
@@ -49,6 +50,7 @@ public class AdminController {
         model.addAttribute("user", user);
         return "admin_user_detail";
     }
+
 
     // 4. KULLANICI SİLME İŞLEMİ
     @GetMapping("/user/delete/{id}")
@@ -67,9 +69,10 @@ public class AdminController {
 
 
     // 6. AĞ VE SİSTEM SAĞLIĞI (SAYFAYI AÇAN METOT)
+
     @GetMapping("/network")
     public String networkHealth() {
-        // Bu metot sadece iskelet HTML'i (admin_network_health.html) yükler
+        // Bu metot sadece iskelet HTML'i (admin_network_health.html) yüklüyoruz
         return "admin_network_health";
     }
 
@@ -78,7 +81,7 @@ public class AdminController {
     @GetMapping("/api/network-data")
     @ResponseBody
     public Map<String, Object> getNetworkData() {
-        // JavaScript (Fetch API) buraya istek atarak anlık verileri alır
+        // JavaScript (Fetch API) buraya istek atarak anlık verileri alıyoruz
         Map<String, Object> data = new HashMap<>();
         data.put("cpuUsage", systemMonitorService.getCpuUsage());
         data.put("usedRam", systemMonitorService.getUsedRam());
@@ -92,6 +95,6 @@ public class AdminController {
     public String listTickets(Model model) {
         // Tüm ticket'ları çekip sayfaya gönderiyoruz
         model.addAttribute("tickets", ticketRepository.findAllByOrderByCreatedAtDesc());
-        return "admin_tickets_list"; // Bu isimde bir HTML oluşturacağız
+        return "admin_tickets_list";
     }
 }

@@ -26,34 +26,30 @@ public class User {
     private String firstName;
     private String lastName;
 
-    @Column(name = "phone_number")
-    private String phoneNumber;
-
-    @Column(name = "city")
-    private String city;
-
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    // Bir kullanıcının birden fazla cihazı olabilir (One-To-Many)
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    // Bir kullanıcının birden fazla cihazı olabilir
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Device> devices;
 
+    // Bir kullanıcının birden fazla tarlası olabilir (SİLME İŞLEMİ İÇİN ŞART)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Field> fields;
+
+    // Kullanıcıya ait destek talepleri (SİLME İŞLEMİ İÇİN ŞART)
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ticket> tickets;
+
     // Bir kullanıcının birden fazla forum gönderisi olabilir
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ForumPost> forumPosts;
 
     // Bir kullanıcının birden fazla forum yorumu olabilir
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ForumComment> forumComments;
 
-    @Column(name = "temperature_unit")
-    private String temperatureUnit = "Celsius"; // Varsayılan değer Celsius olsun
-
-    @Column(name = "wants_email_reports")
-    private Boolean wantsEmailReports = true; // Varsayılan olarak bildirimler açık olsun
-
-    @Column(name = "dark_mode_active")
-    private Boolean darkModeActive = false; // Varsayılan olarak açık tema (karanlık mod kapalı)
-
+    // Kullanıcıya ait bildirimler
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> notifications;
 }

@@ -33,7 +33,7 @@ public class DataInitializer {
                 userRepository.save(admin);
             }
 
-            // Ürün Kütüphanesi
+            // Ürün Kütüphanesi Yüklemesi
 
             if (cropRepository.count() <= 3) {
                 cropRepository.deleteAll();

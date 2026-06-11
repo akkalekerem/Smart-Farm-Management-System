@@ -8,9 +8,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
+public interface DeviceRepository extends JpaRepository<Device, Long> {
+
     // Giriş yapan çiftçinin (User) sahip olduğu tüm cihazları liste halinde getirir
-    public interface DeviceRepository extends JpaRepository<Device, Long> {
-        // 'user' yerine 'owner' yazmalısın (ya da Device.java'daki isim neyse o)
-        List<Device> findByOwner(User user);
-        long countByOwner(User user);
-    }
+    List<Device> findByOwner(User owner);
+
+    // Profil istatistikleri (Cihaz sayısı) için gerekli olan metod:
+    long countByOwner(User owner);
+}

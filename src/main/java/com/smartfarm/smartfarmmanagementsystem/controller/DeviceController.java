@@ -43,7 +43,7 @@ public class DeviceController {
         newDevice.setMacAddress(macAddress);
         newDevice.setOwner(currentUser);
 
-        // Başlangıç değerleri (Mock data)
+        // Başlangıç değerleri
         newDevice.setOnline(true);
         newDevice.setBatteryLevel(100);
         newDevice.setWifiSignal(-45);

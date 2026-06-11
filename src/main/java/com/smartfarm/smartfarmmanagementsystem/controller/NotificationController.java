@@ -44,7 +44,7 @@ public class NotificationController {
         return "redirect:/notifications";
     }
 
-    // Tümünü Okundu İşaretler
+    // Tümünü Okundu İşaretle
     @PostMapping("/notifications/read-all")
     public String markAllAsRead(Authentication authentication) {
         User currentUser = userService.findByEmail(authentication.getName());

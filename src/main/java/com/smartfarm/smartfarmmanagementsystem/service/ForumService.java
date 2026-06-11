@@ -18,12 +18,12 @@ public class ForumService {
     private final ForumCommentRepository forumCommentRepository;
     private final UserService userService; // İşlem yapan kullanıcıyı bulmak için
 
-    // 1. Tüm konuları en yeniden eskiye sıralı getir
+    // 1. Tüm konuları en yeniden eskiye sıralı getirir
     public List<ForumPost> getAllPosts() {
         return forumPostRepository.findAllByOrderByCreatedAtDesc();
     }
 
-    // 2. ID'sine göre tek bir konuyu getir (Detay sayfası için)
+    // 2. ID'sine göre tek bir konuyu getirir
     public ForumPost getPostById(Long id) {
         return forumPostRepository.findById(id).orElse(null);
     }
@@ -41,7 +41,7 @@ public class ForumService {
         }
     }
 
-    // 4. Var olan bir konuya yeni bir yorum ekle
+    // 4. Var olan bir konuya yeni bir yorum ekler
     public void addCommentToPost(Long postId, String content, String email) {
         User author = userService.findByEmail(email);
         ForumPost post = getPostById(postId);

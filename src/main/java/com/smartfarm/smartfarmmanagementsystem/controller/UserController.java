@@ -2,14 +2,17 @@ package com.smartfarm.smartfarmmanagementsystem.controller;
 
 import com.smartfarm.smartfarmmanagementsystem.entity.Ticket;
 import com.smartfarm.smartfarmmanagementsystem.entity.User;
+import com.smartfarm.smartfarmmanagementsystem.repository.DeviceRepository;
+import com.smartfarm.smartfarmmanagementsystem.repository.FieldRepository;
 import com.smartfarm.smartfarmmanagementsystem.repository.TicketRepository;
 import com.smartfarm.smartfarmmanagementsystem.repository.UserRepository;
-import com.smartfarm.smartfarmmanagementsystem.repository.FieldRepository; // Eklendi
-import com.smartfarm.smartfarmmanagementsystem.repository.DeviceRepository; // Eklendi
 import com.smartfarm.smartfarmmanagementsystem.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,24 +29,23 @@ public class UserController {
     private final UserService userService;
     private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
-    private final FieldRepository fieldRepository;   // İstatistik için eklendi
-    private final DeviceRepository deviceRepository; // İstatistik için eklendi
-    private final PasswordEncoder passwordEncoder;
+    private final FieldRepository fieldRepository;
+    private final DeviceRepository deviceRepository;
 
-
-    // PROFİL SAYFASI (GET) - İstatistikler Eklendi
-
+    // ==========================================
+    // PROFİL SAYFASI (GET)
+    // ==========================================
     @GetMapping("/profile")
     public String profilePage(Model model, Principal principal) {
         // Giriş yapan kullanıcıyı buluyoruz
         User user = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
 
-        // Kullanıcıya ait tarla ve cihaz sayılarını sayıyoruz
+        // Kullanıcının sistemdeki tarla ve cihaz sayısını hesaplıyoruz
         long fieldCount = fieldRepository.countByOwner(user);
         long deviceCount = deviceRepository.countByOwner(user);
 
-        // Verileri modele ekliyoruz
+        model.addAttribute("user", user); // Kullanıcı bilgileri (isim, e-posta, rol vb.)
         model.addAttribute("fieldCount", fieldCount);
         model.addAttribute("deviceCount", deviceCount);
         model.addAttribute("activePage", "profile");
@@ -51,18 +53,54 @@ public class UserController {
         return "user/profile";
     }
 
-    @GetMapping("/settings")
-    public String settingsPage(Model model) {
-        model.addAttribute("activePage", "settings");
-        return "user/settings";
+    // PROFİL GÜNCELLEME (POST)
+    @PostMapping("/user/profile/update")
+    public String updateProfile(@RequestParam String firstName,
+                                @RequestParam String lastName,
+                                Principal principal) {
+
+        User user = userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
+
+        // Sadece isim ve soyisim güncelleniyor
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+
+        userRepository.save(user);
+
+        return "redirect:/profile?success=profileUpdated";
     }
 
+
+    // HESABI KALICI OLARAK SİL (POST)
+    @PostMapping("/user/profile/delete")
+    public String deleteAccount(Principal principal, HttpServletRequest request, HttpServletResponse response) {
+        User user = userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
+
+        // UserService üzerinden kullanıcıyı ve ona bağlı tüm verileri kalıcı olarak siler
+        userService.deleteUser(user.getId());
+
+        // Kullanıcının mevcut oturumunu sonlandırır (logout)
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+
+        // Başarılı silme mesajıyla login ekranına yönlendirir
+        return "redirect:/login?deleted=true";
+    }
+
+
+    // DESTEK TALEBİ SAYFASI (GET)
     @GetMapping("/support")
     public String supportPage(Model model) {
         model.addAttribute("activePage", "support");
         return "user/user_support";
     }
 
+
+    // DESTEK TALEBİ GÖNDERME (POST)
     @PostMapping("/support/send")
     public String sendTicket(@RequestParam String subject,
                              @RequestParam String message,
@@ -81,67 +119,5 @@ public class UserController {
         ticketRepository.save(ticket);
 
         return "redirect:/support?success";
-    }
-
-    @PostMapping("/user/profile/update")
-    public String updateProfile(@RequestParam String firstName,
-                                @RequestParam String lastName,
-                                @RequestParam(required = false) String city,
-                                @RequestParam(required = false) String phoneNumber,
-                                Principal principal) {
-
-        User user = userRepository.findByEmail(principal.getName())
-                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
-
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setCity(city);
-        user.setPhoneNumber(phoneNumber);
-
-        userRepository.save(user);
-
-        return "redirect:/profile?success";
-    }
-
-    @PostMapping("/user/settings/update")
-    public String updateSettings(@RequestParam String temperatureUnit,
-                                 @RequestParam(required = false) Boolean wantsEmailReports,
-                                 @RequestParam(required = false) Boolean darkModeActive,
-                                 Principal principal) {
-
-        User user = userRepository.findByEmail(principal.getName())
-                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
-
-        user.setTemperatureUnit(temperatureUnit);
-        // Null kontrolü yaparak güvenli atama
-        user.setWantsEmailReports(wantsEmailReports != null ? wantsEmailReports : false);
-        user.setDarkModeActive(darkModeActive != null ? darkModeActive : false);
-
-        userRepository.save(user);
-
-        return "redirect:/settings?success";
-    }
-
-    @PostMapping("/user/profile/change-password")
-    public String changePassword(@RequestParam String currentPassword,
-                                 @RequestParam String newPassword,
-                                 @RequestParam String confirmPassword,
-                                 Principal principal) {
-
-        User user = userRepository.findByEmail(principal.getName())
-                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
-
-        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
-            return "redirect:/profile?error=wrongPassword";
-        }
-
-        if (!newPassword.equals(confirmPassword)) {
-            return "redirect:/profile?error=passwordMismatch";
-        }
-
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
-
-        return "redirect:/profile?success=passwordChanged";
     }
 }

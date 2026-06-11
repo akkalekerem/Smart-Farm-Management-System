@@ -49,7 +49,8 @@ public class FieldController {
         model.addAttribute("activePage", "home");
         return "pages/index";
     }
-    
+
+    // --- YENİ TARLA EKLEME ---
     @PostMapping("/fields/add")
     public String addField(@RequestParam String fieldName,
                            @RequestParam String cropType,
@@ -71,7 +72,7 @@ public class FieldController {
         return "redirect:/";
     }
 
-    // --- TARLA SİLME  ---
+    // --- TARLA SİLME ---
     @PostMapping("/fields/delete/{id}")
     public String deleteField(@PathVariable("id") Long id) {
         fieldRepository.deleteById(id);

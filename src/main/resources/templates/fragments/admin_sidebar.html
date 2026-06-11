@@ -2,7 +2,7 @@
 <aside th:fragment="adminSidebar(activeMenu)" class="w-64 bg-gray-800 text-white flex flex-col justify-between shadow-xl">
     <div>
         <div class="bg-gray-900 p-6 text-center border-b border-gray-700">
-            <h2 class="text-2xl font-bold text-green-400">Smart Farm</h2>
+            <h2 class="text-2xl font-bold text-green-400">TerraSense</h2>
             <p class="text-sm text-gray-400 mt-1">Yönetim Paneli</p>
         </div>
         <nav class="mt-6 px-4 space-y-2">
@@ -18,14 +18,14 @@
                class="block py-2.5 px-4 rounded transition duration-200">
                 👥 Kullanıcı İşlemleri
             </a>
-            <!-- Diğer Linkler (Şimdilik pasif) -->
+            <!-- Diğer Linkler  -->
             <a th:href="@{/admin/devices}"
                th:classappend="${activeMenu == 'devices' ? 'bg-blue-600 text-white font-semibold' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}"
                class="block py-2.5 px-4 rounded transition duration-200">
                 🚜 Cihaz Yönetimi
             </a>
 
-            <!-- Ağ ve Sistem Sağlığı (Eski Tarla Yönetimi Yerine) -->
+            <!-- Ağ ve Sistem Sağlığı -->
             <a th:href="@{/admin/network}"
                th:classappend="${activeMenu == 'network' ? 'bg-blue-600 text-white font-semibold' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}"
                class="block py-2.5 px-4 rounded transition duration-200">

@@ -25,7 +25,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Kullanıcı bulunamadı: " + email));
 
         // Spring Security'nin tanıdığı User nesnesine dönüştürüyoruz
-// CustomUserDetailsService.java içindeki return kısmını değiştir:
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
