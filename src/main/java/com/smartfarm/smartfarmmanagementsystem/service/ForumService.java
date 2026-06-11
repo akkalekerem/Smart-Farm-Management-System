@@ -41,6 +41,7 @@ public class ForumService {
         }
     }
 
+
     // 4. Var olan bir konuya yeni bir yorum ekler
     public void addCommentToPost(Long postId, String content, String email) {
         User author = userService.findByEmail(email);

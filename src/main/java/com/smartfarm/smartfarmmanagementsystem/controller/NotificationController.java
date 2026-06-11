@@ -27,6 +27,7 @@ public class NotificationController {
         if (authentication != null && authentication.isAuthenticated()) {
             User currentUser = userService.findByEmail(authentication.getName());
 
+
             // Kullanıcının bildirimlerini en yeniden en eskiye doğru çekiyoruz
             List<Notification> notifications = notificationRepository.findByUserOrderByTimestampDesc(currentUser);
 

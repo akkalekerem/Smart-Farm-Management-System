@@ -5,6 +5,7 @@
     --bg-gray: #f9fafb;
 }
 
+
 body {
     font-family: 'Inter', sans-serif; /* Daha modern bir font için */
     background-color: var(--bg-gray);

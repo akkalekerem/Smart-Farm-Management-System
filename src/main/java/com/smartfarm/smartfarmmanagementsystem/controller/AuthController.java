@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.smartfarm.smartfarmmanagementsystem.entity.User;
 
+
 @Controller
 @RequiredArgsConstructor
 public class AuthController {

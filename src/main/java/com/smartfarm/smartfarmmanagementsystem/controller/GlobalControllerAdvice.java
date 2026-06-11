@@ -20,6 +20,7 @@ public class GlobalControllerAdvice {
             String email = authentication.getName();
             User user = userService.findByEmail(email);
 
+
             if (user != null) {
                 model.addAttribute("userName", user.getFirstName());
                 model.addAttribute("user", user); // Hem profil hem ayarlar için lazım

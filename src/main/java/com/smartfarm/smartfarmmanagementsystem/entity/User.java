@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class User {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // ID'nin otomatik artmasını sağlar
     private Long id;

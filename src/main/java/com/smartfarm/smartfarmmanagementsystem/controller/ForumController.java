@@ -15,6 +15,7 @@ public class ForumController {
 
     private final ForumService forumService;
 
+
     // 1. Forum Anasayfası (Tüm konuları listeler)
     @GetMapping
     public String forumHome(Model model) {

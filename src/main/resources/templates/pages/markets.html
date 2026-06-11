@@ -8,6 +8,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             <div th:each="crop : ${crops}">
 
+
                 <div th:onclick="|openModal(${crop.id})|"
                      class="group relative h-64 rounded-3xl overflow-hidden cursor-pointer shadow-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
 

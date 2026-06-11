@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DeviceController {
 
+
     private final DeviceRepository deviceRepository;
     private final UserService userService;
 

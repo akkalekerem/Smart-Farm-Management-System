@@ -10,4 +10,5 @@ class SmartFarmManagementSystemApplicationTests {
     void contextLoads() {
     }
 
+
 }

@@ -16,3 +16,4 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     // OKUNMAMIŞ BİLDİRİMLERİ BULMAK İÇİN
     List<Notification> findByUserAndIsReadFalse(User user);
 }
+
